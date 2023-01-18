@@ -10,7 +10,8 @@ class DocumentManager {
                 name: docSelect.name,
                 key: docSelect.key,
                 type: Prisma.DocType.FILE,
-                originalname: docSelect.originalname
+                originalname: docSelect.originalname,
+                size: docSelect.size
             }
         });
         return document;

@@ -21,4 +21,7 @@ model Document {
   key String
   type DocType
   originalname String
+  size Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

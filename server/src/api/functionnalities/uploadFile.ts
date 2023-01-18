@@ -4,18 +4,21 @@ import path from "node:path";
 import { createWriteStream } from "node:fs";
 import { randomFillSync } from "node:crypto";
 import { NextFunction, Request, Response } from "express";
+import sizeof from "object-sizeof";
 
 const BASE_DIR = "../../../../../DATA";
 
 interface CustomFileInfo extends busboy.FileInfo {
     originalname: string,
     name: string,
-    type?: string
+    type?: string,
+    size?: number
 }
 
 const uploadFile = (req: Request, res: Response, next: NextFunction) => {
     const bb = busboy({ headers: req.headers });
     let file: CustomFileInfo;
+    const contentSize: number = sizeof(req.body);
     bb.on('file', (name: string, stream: internal.Readable, info: busboy.FileInfo) => {
         const { filename } = info;
         const generatedName = getGeneratedName(filename);
@@ -24,7 +27,8 @@ const uploadFile = (req: Request, res: Response, next: NextFunction) => {
         file = {
             ...info,
             originalname: filename,
-            name: generatedName
+            name: generatedName,
+            size: contentSize
         };
     })
     bb.on('close', () => {
