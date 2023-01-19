@@ -8,13 +8,17 @@ class DocumentManager {
         const document = await prisma.document.create({
             data: {
                 name: docSelect.name,
-                key: docSelect.key,
+                parent: docSelect.parent,
                 type: Prisma.DocType.FILE,
                 originalname: docSelect.originalname,
                 size: docSelect.size
             }
         });
         return document;
+    }
+
+    static getAll() {
+        return prisma.document.findMany();
     }
 }
 

@@ -12,6 +12,17 @@ class FileManagerController {
             res.status(200).json(savedDoc);
         } catch (err) {
             console.log(err)
+            res.status(500).send("Error saveUpload: " + err)
+        }
+    }
+
+    public static getAll = (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const docs = DocumentManager.getAll();
+            res.status(200).json(docs);
+        } catch(err) {
+            console.log(err)
+            res.status(500).send("Error getAll: " + err);
         }
     }
 }

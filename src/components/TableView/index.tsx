@@ -2,13 +2,7 @@ import React from "react";
 import "../../assets/css/tableView.css";
 import { useTable } from "react-table";
 import Item from "./components/Item";
-
-type Document = {
-    name: string,
-    type: string,
-    size?: number,
-    updatedAt?: Date
-}
+import { Document } from "../../../server/src/common/interfaces/document";
 
 type propsType = {
     documents: Document[],

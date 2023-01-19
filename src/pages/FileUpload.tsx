@@ -10,7 +10,6 @@ const FileUpload = () => {
       return
     }
     const formData = new FormData();
-    formData.append("key", '/')
     formData.append("file", file)
 
     FileManager.uploadFile(formData).then(res => {

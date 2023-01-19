@@ -10,7 +10,8 @@ class FileManager {
     }
 
     routes() {
-        this.app.post('/upload-file', uploadFile, FileManagerController.saveUpload)
+        this.app.post('/upload-file', uploadFile, FileManagerController.saveUpload);
+        this.app.post('/findAll', FileManagerController.getAll)
     }
 }
 
