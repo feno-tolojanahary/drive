@@ -1,16 +1,19 @@
 import React from "react";
 import "../../assets/css/tableView.css";
-import { useTable } from "react-table";
+import { useTable, Column, Row } from "react-table";
 import Item from "./components/Item";
 import { Document } from "../../../server/src/common/interfaces/document";
 
 type propsType = {
     documents: Document[],
+    setView: React.Dispatch<React.SetStateAction<number | null>>
 }
 
 
 const TableView = (props: propsType) => {
-    const columns = React.useMemo(() => (
+    const { documents: data, setView } = props;
+
+    const columns: Column<Document>[]  = React.useMemo(() => (
         [
             {
                 Header: "Name",
@@ -25,7 +28,7 @@ const TableView = (props: propsType) => {
                 accessor: "updatedAt"
             }
         ]
-    ), [])    
+    ), [])   
 
 
     const {
@@ -34,7 +37,7 @@ const TableView = (props: propsType) => {
         headerGroups,
         rows,
         prepareRow
-    } = useTable({ columns, data: props.documents })
+    } = useTable({ columns, data })
 
     return (
         <div className="flex flex-col">
@@ -54,15 +57,23 @@ const TableView = (props: propsType) => {
                                 ))}
                             </thead>
                             <tbody {...getTableBodyProps()}>
-                            {rows.map((row: any) => {
-                                prepareRow(row)
-                                return (
-                                <Item
-                                    key={...row.getRowProps()}
-                                    row={row}
-                                />
-                                )
-                            })}
+                            {
+                                rows.length ?
+                                    rows.map((row: Row<Document>) => {
+                                        prepareRow(row)
+                                        return (
+                                            <Item
+                                                key={row.id}
+                                                row={row}
+                                                setView={setView}
+                                            />
+                                        )
+                                    })
+                                : 
+                                <tr>
+                                    <span>Folder is empty.</span>
+                                </tr>
+                            }
                             </tbody>
                         </table>
                     </div>

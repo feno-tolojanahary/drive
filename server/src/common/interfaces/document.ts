@@ -1,6 +1,7 @@
 
 
 export interface Document {
+    id?: number,
     name: string,
     parent?: number | null,
     type?: string,

@@ -1,14 +1,18 @@
 import React from "react";
+import { Document } from "../../../../server/src/common/interfaces/document";
+import { Row } from "react-table";
 
 type propsType = {
-    row: any
+    row: Row<Document>,
+    setView: React.Dispatch<React.SetStateAction<number | null>>
 }
 
 const Item = (props: propsType) => {
-    const { row } = props;
+    const { row, setView } = props;
+    const document = row.values;
 
     return (
-        <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100" {...row.getRowProps()}>
+        <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100" {...row.getRowProps()} onClick={() => setView(document.id)}>
             { row.cells.map((cell: any) => (
                 <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap" {...cell.getCellProps()}>
                     {cell.render('Cell')}

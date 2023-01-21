@@ -15,6 +15,7 @@
 /DATA
 
 # misc
+package-lock.json
 .DS_Store
 .env.local
 .env.development.local
