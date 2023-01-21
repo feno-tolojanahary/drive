@@ -1,3 +1,4 @@
+import { Document } from "../../server/src/common/interfaces/document";
 import http from "./http";
 
 class FileManager {
@@ -9,6 +10,10 @@ class FileManager {
 
     public static uploadFile(data: any) {
         return http.post('/doc/upload-file', data);
+    }
+
+    public static saveFolder(data: Document) {
+        return http.post('/doc/save-folder', data);
     }
 }
 

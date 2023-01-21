@@ -4,12 +4,12 @@ import { Prisma } from "@prisma/client";
 
 class DocumentManager {
 
-    static async save(docSelect: any) {
+    public static async save(docSelect: Prisma.DocumentCreateInput) {
         const document = await prisma.document.create({
             data: {
                 name: docSelect.name,
                 parent: docSelect.parent,
-                type: Prisma.DocType.FILE,
+                type: docSelect.type,
                 originalname: docSelect.originalname,
                 size: docSelect.size
             }
@@ -17,7 +17,7 @@ class DocumentManager {
         return document;
     }
 
-    static getAll() {
+    public static getAll() {
         return prisma.document.findMany();
     }
 }

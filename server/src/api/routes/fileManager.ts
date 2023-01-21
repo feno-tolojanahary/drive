@@ -7,11 +7,12 @@ class FileManager {
 
     constructor(app: Express) {
         this.app = app;
+        this.routes();
     }
 
     routes() {
-        this.app.post('/upload-file', uploadFile, FileManagerController.saveUpload);
-        this.app.post('/findAll', FileManagerController.getAll)
+        this.app.post('/doc/upload-file', uploadFile, FileManagerController.saveUpload);
+        this.app.get('/doc/list', FileManagerController.getDocuments)
     }
 }
 

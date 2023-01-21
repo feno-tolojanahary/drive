@@ -5,7 +5,8 @@ import { createWriteStream } from "node:fs";
 import { randomFillSync } from "node:crypto";
 import { NextFunction, Request, Response } from "express";
 import sizeof from "object-sizeof";
-
+import { DocType } from "@prisma/client";
+ 
 const BASE_DIR = "../../../../../DATA";
 
 interface CustomFileInfo extends busboy.FileInfo {
@@ -28,7 +29,8 @@ const uploadFile = (req: Request, res: Response, next: NextFunction) => {
             ...info,
             originalname: filename,
             name: generatedName,
-            size: contentSize
+            size: contentSize,
+            type: DocType.FILE
         };
     })
     bb.on('close', () => {

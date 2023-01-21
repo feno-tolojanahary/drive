@@ -26,6 +26,10 @@ const DocList = () => {
         getDocuments(parent);
     }, [parent, getDocuments])
 
+    const callGetDocument = () => {
+        getDocuments(parent);
+    }
+
     const getByParent = (parent: number | null, docs: Document[]): Document[] => {
         return docs.filter((item: Document) => item.parent === parent)
     }

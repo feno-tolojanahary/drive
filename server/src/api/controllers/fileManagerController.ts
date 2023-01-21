@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import DocumentManager from "../managers/documentManager";
-import DocHelper from "../helpers/docHelper";
+import DocumentManager from "../services/documentManager";
 import { Document } from "../../common/interfaces/document";
 class FileManagerController {
     
@@ -25,6 +24,7 @@ class FileManagerController {
         } catch(err) {
             console.log(err)
             res.status(500).send("Error getAll: " + err);
+
         }
     }
 }

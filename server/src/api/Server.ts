@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-
+import Routes from "./routes";
 class Server {
     private app: Express;
     private port: number;
@@ -7,6 +7,9 @@ class Server {
     constructor(port: number) {
         this.app = express();
         this.port = port;
+        // Initialize routes
+        const routes = new Routes(this.app);
+        routes.init();
     }
 
     getApp() {

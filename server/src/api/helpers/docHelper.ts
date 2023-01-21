@@ -1,10 +1,4 @@
-type Document = {
-    name: string,
-    parent?: number | null,
-    type?: string,
-    originalname: string,
-    size: number
-}
+import { Document } from "../../common/interfaces/document";
 
 class DocHelper {
     
