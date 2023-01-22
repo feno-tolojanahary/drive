@@ -65,7 +65,7 @@ const TableView = (props: propsType) => {
                                             <Item
                                                 key={row.id}
                                                 row={row}
-                                                setView={setView}
+                                                setParentView={setView}
                                             />
                                         )
                                     })

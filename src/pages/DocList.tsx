@@ -1,14 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 import TableView from "../components/TableView";
 import FileManager from "../services/FileManager";
-import { Document } from "../../server/src/common/interfaces/document";
+import { Document, DocType } from "../../server/src/common/interfaces/document";
+import ModalCreateFolder from "../components/CreateFolder";
+import { FaFolderPlus } from "react-icons/fa";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<Document[]>([])
     const [parent, setParent] = useState<number | null>(null);
+    const [isCreateFolderOpen, setIsCreateFolderOpen] = useState<boolean>(false);
    
-    const getDocuments = useCallback((_parent: number | null) => {
-        if (documents.length === 0) {
+    const getDocuments = useCallback((_parent: number | null, _docValue: Document[]) => {
+        if (_docValue.length === 0) {
             FileManager.getDocuments()
             .then((res: any) => {
                 const data: Document[] = res.data;
@@ -17,17 +20,18 @@ const DocList = () => {
                 console.log("Error getting document: ", err);
             })
         } else {
-            const parentDoc: Document | undefined = documents.find((item: Document) => item.id === _parent);
-            if (parentDoc?.type === "FOLDER") setDocuments(getByParent(_parent, documents))
+            const parentDoc: Document | undefined = _docValue.find((item: Document) => item.id === _parent);
+            if (parentDoc?.type === DocType.FOLDER) setDocuments(getByParent(_parent, _docValue))
         }
-    }, [documents])
+    }, [])
 
     useEffect(() => {
-        getDocuments(parent);
+        getDocuments(parent, documents);
+        // eslint-disable-next-line
     }, [parent, getDocuments])
 
-    const callGetDocument = () => {
-        getDocuments(parent);
+    const addNewDocument = (doc: Document) => {
+        getDocuments(parent, [...documents, doc]);
     }
 
     const getByParent = (parent: number | null, docs: Document[]): Document[] => {
@@ -36,9 +40,23 @@ const DocList = () => {
 
     return (
         <>
-            <TableView
-                documents={documents}
-                setView={setParent}
+            <div>
+                <div className="flex mb-10">
+                    <FaFolderPlus 
+                        className="text-base hover:cursor-pointer"
+                        onClick={() => setIsCreateFolderOpen(true)}
+                    />
+                </div>
+                    <TableView
+                        documents={documents}
+                        setView={setParent}
+                    />
+            </div>
+            
+            <ModalCreateFolder 
+                addNewDocument={addNewDocument}
+                isOpen={isCreateFolderOpen}
+                setIsOpen={setIsCreateFolderOpen}
             />
         </>
     )

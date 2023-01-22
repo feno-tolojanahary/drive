@@ -7,13 +7,13 @@ import FileManager from "../services/FileManager";
 type propsType = {
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    refreshView: () => void
+    addNewDocument: (doc: Document) => void
 }
 
 const CreateFolder = ({
     isOpen: isOpenModal,
     setIsOpen: setIsOpenModal,
-    refreshView
+    addNewDocument
 }: propsType) => {
 
     const [folderName, setFolderName] = useState<string>();
@@ -23,7 +23,7 @@ const CreateFolder = ({
     }
 
     const handleSubmitForm = () => {
-        if (!folderName) {
+        if (!folderName || folderName?.trim()) {
             toast.error("Folder name must not be empty")  
             return; 
         }
@@ -38,7 +38,7 @@ const CreateFolder = ({
                 if (!res.data) throw new Error("No data got");
                 toast.success("Folder created with success!");
                 setIsOpenModal(false);
-                refreshView();
+                addNewDocument(res.data as Document);
             })
             .catch(err => {
                 console.log(err);
