@@ -1,7 +1,7 @@
 import React from 'react';
-import FileUpload from './pages/FileUpload';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import DocList from './pages/DocList';
 
 function App() {
     
@@ -19,7 +19,7 @@ function App() {
                 pauseOnHover
                 theme="colored"
             />
-            <FileUpload />
+            <DocList />
         </div>
     )
 }

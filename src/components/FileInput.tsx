@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 
 interface Props {
-  onFileSelected: (file: File | undefined) => void;
+  onFileSelected: (file: File | undefined) => void,
+  input: React.RefObject<HTMLInputElement>
 }
 
-const FileInput: React.FC<Props> = ({ onFileSelected }) => {
-  const [file, setFile] = useState<File | undefined>();
+const FileInput: React.FC<Props> = ({ onFileSelected, input }: Props) => {
   const [previewUrl, setPreviewUrl] = useState<string | ArrayBuffer | null | undefined>();
   
   const types = ['image/png', 'image/jpeg'];
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
-    setFile(selectedFile);
     onFileSelected(selectedFile);
 
     // create a preview of the selected image
@@ -24,11 +23,12 @@ const FileInput: React.FC<Props> = ({ onFileSelected }) => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
+    <div className="flex-col items-center p-4 hidden">
       <input
         className="w-64 p-2 rounded-md shadow-md bg-white border border-gray-400 focus:outline-none focus:border-indigo-500"
         type="file"
         onChange={handleFileChange}
+        ref={input}
       />
       {previewUrl && (
         <img

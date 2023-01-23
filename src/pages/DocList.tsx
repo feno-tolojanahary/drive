@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import TableView from "../components/TableView";
 import FileManager from "../services/FileManager";
 import { Document, DocType } from "../../server/src/common/interfaces/document";
 import ModalCreateFolder from "../components/CreateFolder";
-import { FaFolderPlus } from "react-icons/fa";
+import FileInput from "../components/FileInput";
+import { toast } from 'react-toastify';
+import MenuDropdown from "../components/MenuDropdown";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<Document[]>([])
     const [parent, setParent] = useState<number | null>(null);
     const [isCreateFolderOpen, setIsCreateFolderOpen] = useState<boolean>(false);
+    const inputFileRef = useRef<HTMLInputElement>(null);
    
     const getDocuments = useCallback((_parent: number | null, _docValue: Document[]) => {
         if (_docValue.length === 0) {
@@ -25,6 +28,24 @@ const DocList = () => {
         }
     }, [])
 
+    const handleFileSelected = (file: File | undefined) => {
+        if (!file) {
+          console.log("no file selected");
+          return
+        }
+        const formData = new FormData();
+        formData.append("file", file)
+    
+        FileManager.uploadFile(formData).then(res => {
+          if (!res) throw new Error("no resultat");
+          toast.success("Upload with success")
+          const doc: Document = res.data;
+          getDocuments(parent, [...documents, doc]);
+        }).catch(error => {
+          console.log(error)
+        })
+      };
+
     useEffect(() => {
         getDocuments(parent, documents);
         // eslint-disable-next-line
@@ -38,21 +59,21 @@ const DocList = () => {
         return docs.filter((item: Document) => item.parent === parent)
     }
 
+    const handleNewFile = () => {
+        inputFileRef.current?.click();
+    }
+
     return (
         <>
-            <div>
-                <div className="flex mb-10">
-                    <FaFolderPlus 
-                        className="text-base hover:cursor-pointer"
-                        onClick={() => setIsCreateFolderOpen(true)}
-                    />
-                </div>
-                    <TableView
-                        documents={documents}
-                        setView={setParent}
-                    />
-            </div>
-            
+            <MenuDropdown 
+                onClickFolder={() => setIsCreateFolderOpen(true)}
+                onClickFile={handleNewFile}
+            />
+            <TableView
+                documents={documents}
+                setView={setParent}
+            />
+            <FileInput onFileSelected={handleFileSelected} input={inputFileRef} />
             <ModalCreateFolder 
                 addNewDocument={addNewDocument}
                 isOpen={isCreateFolderOpen}
