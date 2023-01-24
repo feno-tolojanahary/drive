@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Modal from "./Modal";
 import { toast } from 'react-toastify';
-import { DocType, Document } from "../../server/src/common/interfaces/document";
+import { DocType, Document, DocumentRow } from "../../server/src/common/interfaces/document";
 import FileManager from "../services/FileManager";
 
 type propsType = {
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    addNewDocument: (doc: Document) => void
+    addNewDocument: (doc: DocumentRow) => void
 }
 
 const CreateFolder = ({
@@ -38,7 +38,7 @@ const CreateFolder = ({
                 if (!res.data) throw new Error("No data got");
                 toast.success("Folder created with success!");
                 setIsOpenModal(false);
-                addNewDocument(res.data as Document);
+                addNewDocument(res.data as DocumentRow);
             })
             .catch(err => {
                 console.log(err);

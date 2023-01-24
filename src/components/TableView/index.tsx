@@ -2,18 +2,22 @@ import React from "react";
 import "../../assets/css/tableView.css";
 import { useTable, Column, Row } from "react-table";
 import Item from "./components/Item";
-import { Document } from "../../../server/src/common/interfaces/document";
+import { DocumentRow } from "../../../server/src/common/interfaces/document";
+import { bytesToSize } from "../../../server/src/common/helper";
+import DropdownAction from "../DropdownAction";
+import { Action } from "../../interfaces/general";
 
 type propsType = {
-    documents: Document[],
-    setView: React.Dispatch<React.SetStateAction<number | null>>
+    documents: DocumentRow[],
+    setView: React.Dispatch<React.SetStateAction<number | null>>,
+    onClickAction: (type: Action, doc: DocumentRow) => void
 }
 
 
 const TableView = (props: propsType) => {
-    const { documents: data, setView } = props;
+    const { documents: data, setView, onClickAction } = props;
 
-    const columns: Column<Document>[]  = React.useMemo(() => (
+    const columns: Column<DocumentRow>[]  = React.useMemo(() => (
         [
             {
                 Header: "Name",
@@ -21,15 +25,20 @@ const TableView = (props: propsType) => {
             },
             {
                 Header: "Size",
-                accessor: "size"
+                accessor: "size",
+                Cell: ({value}) => value ? <>{bytesToSize(value)}</> : <></>
             },
             {
                 Header: "Modified",
                 accessor: "updatedAt"
+            },
+            {
+                Header: "",
+                accessor: "id",
+                Cell: ({ row }) => <DropdownAction onClick={onClickAction} doc={row.original} />
             }
         ]
     ), [])   
-
 
     const {
         getTableProps,
@@ -59,7 +68,7 @@ const TableView = (props: propsType) => {
                             <tbody {...getTableBodyProps()}>
                             {
                                 rows.length ?
-                                    rows.map((row: Row<Document>) => {
+                                    rows.map((row: Row<DocumentRow>) => {
                                         prepareRow(row)
                                         return (
                                             <Item

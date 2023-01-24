@@ -20,6 +20,26 @@ class DocumentManager {
     public static getAll() {
         return prisma.document.findMany();
     }
+
+    public static updateDocument(input: Prisma.DocumentWhereUniqueInput, doc: Prisma.DocumentUpdateInput) {
+        return prisma.document.update({
+            where: { id: input.id as number },
+            data: doc
+        })
+    }
+
+    public static removeFile(doc: Prisma.DocumentWhereUniqueInput) {
+        return prisma.document.update({
+            where: { id: doc.id },
+            data: { isArchived: true }
+        })
+    }
+
+    public static deleteDoc(doc: Prisma.DocumentWhereUniqueInput) {
+        return prisma.document.delete({
+            where: { id: doc.id }
+        })
+    }
 }
 
 export default DocumentManager;

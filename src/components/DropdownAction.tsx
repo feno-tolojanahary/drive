@@ -1,28 +1,29 @@
 import { Menu, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { 
-    FaFolderPlus, 
-    FaAngleDown,
-    FaFileUpload
+    FaEdit,
+    FaTrashAlt
 } from "react-icons/fa";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { DocumentRow } from '../../server/src/common/interfaces/document';
+import { Action } from '../interfaces/general';
 
-type propsType = {
-    onClickFolder: React.MouseEventHandler<HTMLButtonElement>,
-    onClickFile: React.MouseEventHandler<HTMLButtonElement>
+type propsType = { 
+    onClick: (eventName: Action, doc: DocumentRow) => void,
+    doc: DocumentRow
 }
 
-export default function MenuDropdown({
-  onClickFolder,
-  onClickFile
+export default function DropdownAction({
+  onClick,
+  doc
 }: propsType) {
   return (
     <div className="fixed top-16 w-56 text-right">
       <Menu as="div" className="relative inline-block text-left">
         <div>
-          <Menu.Button className="inline-flex w-full justify-center rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-300 text-gray-900 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-            New
-            <FaAngleDown
-              className="ml-2 -mr-1 h-5 w-5"
+          <Menu.Button className="inline-flex w-full justify-center rounded-md bg-opacity-20 px-1 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+            <BsThreeDotsVertical
+              className="ml-2 -mr-1 h-5 w-5 text-gray-900"
             />
           </Menu.Button>
         </div>
@@ -43,31 +44,29 @@ export default function MenuDropdown({
                     className={`${
                       active ? 'bg-gray-300' : ''
                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                    onClick={onClickFolder}
+                    onClick={() => onClick("update", doc)}
                   >
-                    <FaFolderPlus
+                    <FaEdit
                       className="mr-2 h-5 w-5"
                       aria-hidden="true"
                     />
-                    New Folder
+                    Update
                   </button>
                 )}
               </Menu.Item>
-            </div>
-            <div className="px-1 py-1 ">
               <Menu.Item>
                 {({ active }) => (
                   <button
                     className={`${
                       active ? 'bg-gray-300' : ''
-                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                    onClick={onClickFile}
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900`}
+                    onClick={() => onClick("delete", doc)}
                   >
-                    <FaFileUpload
-                      className="mr-2 h-5 w-5"
-                      aria-hidden="true"
-                    />
-                    Upload File
+                      <FaTrashAlt
+                        className="mr-2 h-5 w-5"
+                        aria-hidden="true"
+                      />
+                    Delete
                   </button>
                 )}
               </Menu.Item>

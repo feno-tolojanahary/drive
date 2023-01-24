@@ -1,9 +1,9 @@
 import React from "react";
-import { Document } from "../../../../server/src/common/interfaces/document";
+import { DocumentRow } from "../../../../server/src/common/interfaces/document";
 import { Row } from "react-table";
 
 type propsType = {
-    row: Row<Document>,
+    row: Row<DocumentRow>,
     setParentView: React.Dispatch<React.SetStateAction<number | null>>
 }
 

@@ -1,29 +1,30 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import TableView from "../components/TableView";
 import FileManager from "../services/FileManager";
-import { Document, DocType } from "../../server/src/common/interfaces/document";
+import { Document, DocType, DocumentRow } from "../../server/src/common/interfaces/document";
 import ModalCreateFolder from "../components/CreateFolder";
 import FileInput from "../components/FileInput";
 import { toast } from 'react-toastify';
 import MenuDropdown from "../components/MenuDropdown";
+import { Action } from "../interfaces/general";
 
 const DocList = () => {
-    const [documents, setDocuments] = useState<Document[]>([])
+    const [documents, setDocuments] = useState<DocumentRow[]>([])
     const [parent, setParent] = useState<number | null>(null);
     const [isCreateFolderOpen, setIsCreateFolderOpen] = useState<boolean>(false);
     const inputFileRef = useRef<HTMLInputElement>(null);
    
-    const getDocuments = useCallback((_parent: number | null, _docValue: Document[]) => {
+    const getDocuments = useCallback((_parent: number | null, _docValue: DocumentRow[]) => {
         if (_docValue.length === 0) {
             FileManager.getDocuments()
             .then((res: any) => {
-                const data: Document[] = res.data;
+                const data: DocumentRow[] = res.data;
                 setDocuments(getByParent(_parent, data));
             }).catch(err => {
                 console.log("Error getting document: ", err);
             })
         } else {
-            const parentDoc: Document | undefined = _docValue.find((item: Document) => item.id === _parent);
+            const parentDoc: DocumentRow | undefined = _docValue.find((item: DocumentRow) => item.id === _parent);
             if (parentDoc?.type === DocType.FOLDER) setDocuments(getByParent(_parent, _docValue))
         }
     }, [])
@@ -39,7 +40,7 @@ const DocList = () => {
         FileManager.uploadFile(formData).then(res => {
           if (!res) throw new Error("no resultat");
           toast.success("Upload with success")
-          const doc: Document = res.data;
+          const doc: DocumentRow = res.data;
           getDocuments(parent, [...documents, doc]);
         }).catch(error => {
           console.log(error)
@@ -51,27 +52,55 @@ const DocList = () => {
         // eslint-disable-next-line
     }, [parent, getDocuments])
 
-    const addNewDocument = (doc: Document) => {
+    const addNewDocument = (doc: DocumentRow) => {
         getDocuments(parent, [...documents, doc]);
     }
 
-    const getByParent = (parent: number | null, docs: Document[]): Document[] => {
-        return docs.filter((item: Document) => item.parent === parent)
+    const getByParent = (parent: number | null, docs: DocumentRow[]): DocumentRow[] => {
+        return docs.filter((item: DocumentRow) => item.parent === parent)
     }
 
     const handleNewFile = () => {
         inputFileRef.current?.click();
     }
 
+    
+    const handleClickTableAction = async (type: Action, doc: DocumentRow) => {
+        if (type === "delete") {
+            const res = await FileManager.removeDoc(doc.id);
+            if (typeof res.data?.id === "number") {
+                const _documents = documents.filter((item: DocumentRow) => item.id === res.data.id);
+                setDocuments(_documents);
+            }
+        } else if (type === "update") {
+            const res = await FileManager.updateDoc(doc)
+            if (typeof res.data?.id === "number") {
+                const _documents = documents.map((item: DocumentRow) => {
+                    if (item.id === res.data.id) {
+                        item = {
+                            ...item,
+                            ...doc
+                        }
+                    }
+                    return item;
+                })
+                setDocuments(_documents);
+            }
+        }
+    }
+
     return (
         <>
-            <MenuDropdown 
-                onClickFolder={() => setIsCreateFolderOpen(true)}
-                onClickFile={handleNewFile}
-            />
+            <div className="mb-8">
+                <MenuDropdown 
+                    onClickFolder={() => setIsCreateFolderOpen(true)}
+                    onClickFile={handleNewFile}
+                />
+            </div>
             <TableView
                 documents={documents}
                 setView={setParent}
+                onClickAction={handleClickTableAction}
             />
             <FileInput onFileSelected={handleFileSelected} input={inputFileRef} />
             <ModalCreateFolder 

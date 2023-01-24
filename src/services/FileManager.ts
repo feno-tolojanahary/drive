@@ -15,6 +15,18 @@ class FileManager {
     public static saveFolder(data: Document) {
         return http.post('/doc/save-folder', data);
     }
+
+    public static updateDoc(data: Document) {
+        return http.put(`/doc/update/${data.id}`, data);
+    }
+
+    public static removeDoc(id: number) {
+        return http.put(`/doc/remove/${id}`);
+    }
+
+    public static deleteDoc(id: number) {
+        return http.put(`/doc/delete/${id}`);
+    }
 }
 
 export default FileManager;
