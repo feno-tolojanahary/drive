@@ -1,4 +1,4 @@
-import { Document } from "../../server/src/common/interfaces/document";
+import { Document, DocumentOpt } from "../../server/src/common/interfaces/document";
 import http from "./http";
 
 class FileManager {
@@ -16,8 +16,8 @@ class FileManager {
         return http.post('/doc/save-folder', data);
     }
 
-    public static updateDoc(data: Document) {
-        return http.put(`/doc/update/${data.id}`, data);
+    public static updateDoc(id: number, data: DocumentOpt) {
+        return http.put(`/doc/update/${id}`, data);
     }
 
     public static removeDoc(id: number) {

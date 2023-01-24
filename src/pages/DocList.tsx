@@ -67,25 +67,25 @@ const DocList = () => {
     
     const handleClickTableAction = async (type: Action, doc: DocumentRow) => {
         if (type === "delete") {
-            const res = await FileManager.removeDoc(doc.id);
-            if (typeof res.data?.id === "number") {
-                const _documents = documents.filter((item: DocumentRow) => item.id === res.data.id);
-                setDocuments(_documents);
-            }
+            // const res = await FileManager.removeDoc(doc.id);
+            // if (typeof res.data?.id === "number") {
+            //     const _documents = documents.filter((item: DocumentRow) => item.id === res.data.id);
+            //     setDocuments(_documents);
+            // }
         } else if (type === "update") {
-            const res = await FileManager.updateDoc(doc)
-            if (typeof res.data?.id === "number") {
-                const _documents = documents.map((item: DocumentRow) => {
-                    if (item.id === res.data.id) {
-                        item = {
-                            ...item,
-                            ...doc
-                        }
-                    }
-                    return item;
-                })
-                setDocuments(_documents);
-            }
+            // const res = await FileManager.updateDoc(doc)
+            // if (typeof res.data?.id === "number") {
+            //     const _documents = documents.map((item: DocumentRow) => {
+            //         if (item.id === res.data.id) {
+            //             item = {
+            //                 ...item,
+            //                 ...doc
+            //             }
+            //         }
+            //         return item;
+            //     })
+            //     setDocuments(_documents);
+            // }
         }
     }
 

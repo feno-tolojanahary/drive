@@ -1,66 +1,61 @@
 import React, { useState } from "react";
-import Modal from "./Modal";
 import { toast } from 'react-toastify';
-import { DocType, Document, DocumentRow } from "../../server/src/common/interfaces/document";
-import FileManager from "../services/FileManager";
+import Modal from "../Modal";
+import { DocumentRow } from "../../../server/src/common/interfaces/document";
+import FileManager from "../../services/FileManager";
 
 type propsType = {
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    addNewDocument: (doc: DocumentRow) => void
+    document: DocumentRow,
+    updateDocList: (doc: Document) => void
 }
 
-const CreateFolder = ({
+const ModalRenameFile = ({
     isOpen: isOpenModal,
     setIsOpen: setIsOpenModal,
-    addNewDocument
+    document,
+    updateDocList
 }: propsType) => {
 
-    const [folderName, setFolderName] = useState<string>();
+    const [inputVal, setInputVal] = useState<string>(document.name);
 
-    const handleChangeInput = (e: React.FormEvent<HTMLInputElement>) => {
-        setFolderName(e.currentTarget.value);
+    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputVal(e.currentTarget.value);
     }
 
     const handleSubmitForm = () => {
-        if (!folderName || folderName?.trim()) {
-            toast.error("Folder name must not be empty")  
-            return; 
+        if (!inputVal || (inputVal && Boolean(inputVal.trim()))) {
+            toast("The name must not be empty");
+            return;
         }
-        
-        const folder: Document = {
-            name: folderName,
-            type: DocType.FOLDER
-        }
-
-        FileManager.saveFolder(folder)
+    
+        FileManager.updateDoc(document.id, { name: inputVal })
             .then((res: any) => {
-                if (!res.data) throw new Error("No data got");
-                toast.success("Folder created with success!");
-                setIsOpenModal(false);
-                addNewDocument(res.data as DocumentRow);
+                if (!res.data) throw new Error("no data received");
+                toast.success("Renaming file with success");
+                updateDocList(res.data as Document);
             })
             .catch(err => {
                 console.log(err);
-                toast.error("An error occur when trying to create folder!")
+                toast.error("Error when renaiming doc, please retry");
             })
-
     }
 
     return (
-        <Modal
+        <Modal 
             title="New Folder"
             isOpen={isOpenModal}
             setIsOpen={setIsOpenModal}
         >
             <form onSubmit={handleSubmitForm}>
                 <div className="mb-6">
-                    <label htmlFor="folderName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New Folder</label>
+                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rename file</label>
                     <input 
                         type="text" 
-                        id="folderName" 
                         onChange={handleChangeInput}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Folder name"     
+                        value={inputVal}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={"File name"}     
                     />
                 </div>
                 <div className="flex justify-around">
@@ -69,18 +64,18 @@ const CreateFolder = ({
                             className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                             onClick={() => setIsOpenModal(false)}
                         >
-                            Cancel
-                        </button>
+                        Cancel
+                    </button>
                     <button 
                             type="submit" 
                             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         >
-                            Create
-                        </button>
+                        Ok
+                    </button>
                 </div>
             </form>
         </Modal>
     )
 }
 
-export default CreateFolder;
+export default ModalRenameFile;
