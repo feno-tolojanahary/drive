@@ -3,12 +3,13 @@ import { toast } from 'react-toastify';
 import Modal from "../Modal";
 import { DocumentRow } from "../../../server/src/common/interfaces/document";
 import FileManager from "../../services/FileManager";
+import { Action } from "../../interfaces/general";
 
 type propsType = {
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     document: DocumentRow,
-    updateDocList: (doc: Document) => void
+    updateDocList: (type: Action, doc: DocumentRow) => void
 }
 
 const ModalRenameFile = ({
@@ -34,7 +35,7 @@ const ModalRenameFile = ({
             .then((res: any) => {
                 if (!res.data) throw new Error("no data received");
                 toast.success("Renaming file with success");
-                updateDocList(res.data as Document);
+                updateDocList("update", res.data as DocumentRow);
             })
             .catch(err => {
                 console.log(err);

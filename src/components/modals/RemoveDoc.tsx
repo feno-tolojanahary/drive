@@ -1,24 +1,35 @@
 import React from "react";
 import Modal from "../Modal";
 import { DocumentRow } from "../../../server/src/common/interfaces/document";
+import FileManager from "../../services/FileManager";
+import { toast } from "react-toastify";
+import { Action } from "../../interfaces/general";
 
 type propsType = {
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     document: DocumentRow,
-    updateDocListDel: (doc: Document) => void
+    updateDocList: (type: Action, doc: DocumentRow) => void
 }
 
 export default function ModalDeleteDoc({
     isOpen: isOpenModal,
     setIsOpen: setIsOpenModal,
     document,
-    updateDocListDel
+    updateDocList
 } : propsType) {
 
     const handleDeleteDoc = () => {
-
-    }
+        FileManager.removeDoc(document.id)
+            .then((res) => {
+                const doc: DocumentRow = res.data;
+                updateDocList("remove", doc);
+                toast.success("Removing file with success");
+            }).catch(err => {
+                console.log(err)
+                toast.error("Error when deleting folder");
+            })
+    }   
 
 
     return (

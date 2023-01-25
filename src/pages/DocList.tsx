@@ -1,17 +1,23 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import TableView from "../components/TableView";
 import FileManager from "../services/FileManager";
-import { Document, DocType, DocumentRow } from "../../server/src/common/interfaces/document";
+import { DocType, DocumentRow } from "../../server/src/common/interfaces/document";
 import ModalCreateFolder from "../components/CreateFolder";
 import FileInput from "../components/FileInput";
 import { toast } from 'react-toastify';
 import MenuDropdown from "../components/MenuDropdown";
 import { Action } from "../interfaces/general";
+import ModalRenameFile from "../components/modals/RenameFile";
+import ModalDeleteDoc from "../components/modals/RemoveDoc";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
     const [parent, setParent] = useState<number | null>(null);
+    const [documentToDelete, setDocumentToDelete] = useState<DocumentRow>();
+    const [documentToRename, setDocumentToRename] = useState<DocumentRow>();
     const [isCreateFolderOpen, setIsCreateFolderOpen] = useState<boolean>(false);
+    const [isOpenModalToDelete, setIsOpenModalDelete] = useState<boolean>(false);
+    const [isOpenRenameDoc, setIsOpenRenameDoc] = useState<boolean>(false);
     const inputFileRef = useRef<HTMLInputElement>(null);
    
     const getDocuments = useCallback((_parent: number | null, _docValue: DocumentRow[]) => {
@@ -66,27 +72,32 @@ const DocList = () => {
 
     
     const handleClickTableAction = async (type: Action, doc: DocumentRow) => {
-        if (type === "delete") {
-            // const res = await FileManager.removeDoc(doc.id);
-            // if (typeof res.data?.id === "number") {
-            //     const _documents = documents.filter((item: DocumentRow) => item.id === res.data.id);
-            //     setDocuments(_documents);
-            // }
+        if (type === "remove") {
+            setDocumentToDelete(doc);
+            setIsOpenModalDelete(true);
         } else if (type === "update") {
-            // const res = await FileManager.updateDoc(doc)
-            // if (typeof res.data?.id === "number") {
-            //     const _documents = documents.map((item: DocumentRow) => {
-            //         if (item.id === res.data.id) {
-            //             item = {
-            //                 ...item,
-            //                 ...doc
-            //             }
-            //         }
-            //         return item;
-            //     })
-            //     setDocuments(_documents);
-            // }
+            setDocumentToRename(doc);
+            setIsOpenModalDelete(true);
         }
+    }
+
+    const updateDocList = (type: Action, doc: DocumentRow) => {
+        let _newDocs: DocumentRow[] = documents;
+        if (type === "update") {
+            _newDocs = documents.map((item: DocumentRow) => {
+                if (item.id === doc.id) {
+                    item = {
+                        ...item,
+                        ...doc
+                    }
+                }
+                return item;
+            })
+        }
+        if (type === "remove") {
+            _newDocs = documents.filter((item: DocumentRow) => item.id !== doc.id);
+        }
+        setDocuments(_newDocs);
     }
 
     return (
@@ -108,6 +119,22 @@ const DocList = () => {
                 isOpen={isCreateFolderOpen}
                 setIsOpen={setIsCreateFolderOpen}
             />
+            { documentToRename &&
+                <ModalRenameFile
+                    document={documentToRename}
+                    isOpen={isOpenRenameDoc}
+                    setIsOpen={setIsOpenRenameDoc}
+                    updateDocList={updateDocList}
+                />
+            }
+            { documentToDelete &&
+                <ModalDeleteDoc
+                    document={documentToDelete}
+                    isOpen={isOpenModalToDelete}
+                    setIsOpen={setIsOpenRenameDoc}
+                    updateDocList={updateDocList}
+                />
+            }
         </>
     )
 }
