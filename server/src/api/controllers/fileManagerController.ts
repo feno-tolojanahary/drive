@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import DocumentManager from "../services/documentManager";
 import { Document } from "../../common/interfaces/document";
+import fs from "node:fs";
 class FileManagerController {
     
     public static saveDocument = async (req: Request, res: Response, next: NextFunction) => {

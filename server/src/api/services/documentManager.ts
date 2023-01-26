@@ -40,6 +40,12 @@ class DocumentManager {
             where: { id: doc.id }
         })
     }
+
+    public static findOne(input: Prisma.DocumentWhereUniqueInput) {
+        return prisma.document.findUnique({
+            where: { id: input.id }
+        })
+    }
 }
 
 export default DocumentManager;

@@ -9,4 +9,4 @@ class DocHelper {
 
 }
 
-export default DocHelper;
+export default DocHelper;                   
