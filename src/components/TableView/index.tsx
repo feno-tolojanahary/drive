@@ -4,7 +4,7 @@ import { useTable, Column, Row } from "react-table";
 import Item from "./components/Item";
 import { DocumentRow } from "../../../server/src/common/interfaces/document";
 import { bytesToSize } from "../../../server/src/common/helper";
-import DropdownAction from "../DropdownAction";
+import DropdownAction from "../dropdowns/DropdownAction";
 import { Action } from "../../interfaces/general";
 
 type propsType = {

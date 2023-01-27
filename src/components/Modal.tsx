@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
 type propsType = {
-    title: string,
+    title?: string,
     children: React.ReactNode,
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -29,7 +29,7 @@ function Modal({
     >
       <Dialog onClose={() => setIsOpen(false)}>
         <Dialog.Panel>
-          <Dialog.Title>{title}</Dialog.Title>
+          {title && <Dialog.Title>{title}</Dialog.Title>}
           {children}
         </Dialog.Panel>
       </Dialog>

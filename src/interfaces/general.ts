@@ -1,3 +1,3 @@
 
 
-export type Action = "update" | "delete" | "remove"
+export type Action = "update" | "delete" | "remove" | "play"

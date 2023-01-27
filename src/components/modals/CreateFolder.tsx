@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Modal from "./Modal";
+import Modal from "../Modal";
 import { toast } from 'react-toastify';
-import { DocType, Document, DocumentRow } from "../../server/src/common/interfaces/document";
-import FileManager from "../services/FileManager";
+import { DocType, Document, DocumentRow } from "../../../server/src/common/interfaces/document";
+import FileManager from "../../services/FileManager";
 
 type propsType = {
     isOpen: boolean,

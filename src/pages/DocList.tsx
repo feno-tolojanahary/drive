@@ -2,21 +2,24 @@ import React, { useCallback, useEffect, useState, useRef } from "react";
 import TableView from "../components/TableView";
 import FileManager from "../services/FileManager";
 import { DocType, DocumentRow } from "../../server/src/common/interfaces/document";
-import ModalCreateFolder from "../components/CreateFolder";
+import ModalCreateFolder from "../components/modals/CreateFolder";
 import FileInput from "../components/FileInput";
 import { toast } from 'react-toastify';
-import MenuDropdown from "../components/MenuDropdown";
+import MenuDropdown from "../components/dropdowns/MenuDropdown";
 import { Action } from "../interfaces/general";
 import ModalRenameFile from "../components/modals/RenameFile";
 import ModalDeleteDoc from "../components/modals/RemoveDoc";
+import ModalVideoPlayer from "../components/modals/VideoPlayer";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
     const [parent, setParent] = useState<number | null>(null);
     const [documentToDelete, setDocumentToDelete] = useState<DocumentRow>();
     const [documentToRename, setDocumentToRename] = useState<DocumentRow>();
+    const [videoFile, setVideoFile] = useState<DocumentRow>();
     const [isCreateFolderOpen, setIsCreateFolderOpen] = useState<boolean>(false);
     const [isOpenModalToDelete, setIsOpenModalDelete] = useState<boolean>(false);
+    const [isOpenPlayer, setIsOpenPlayer] = useState<boolean>(false);
     const [isOpenRenameDoc, setIsOpenRenameDoc] = useState<boolean>(false);
     const inputFileRef = useRef<HTMLInputElement>(null);
    
@@ -78,6 +81,9 @@ const DocList = () => {
         } else if (type === "update") {
             setDocumentToRename(doc);
             setIsOpenModalDelete(true);
+        } else if (type === "play") {
+            setVideoFile(doc);
+            setIsOpenPlayer(true);
         }
     }
 
@@ -133,6 +139,13 @@ const DocList = () => {
                     isOpen={isOpenModalToDelete}
                     setIsOpen={setIsOpenRenameDoc}
                     updateDocList={updateDocList}
+                />
+            }
+            { videoFile &&
+                <ModalVideoPlayer 
+                    isOpen={isOpenPlayer}
+                    setIsOpen={setIsOpenPlayer}
+                    videoFile={videoFile}
                 />
             }
         </>

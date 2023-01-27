@@ -4,7 +4,7 @@ export interface Document {
     id?: number,
     name: string,
     type: string,
-    key: string,
+    key?: string,
     parent?: number | null,
     originalname?: string | null,
     size?: number | null,

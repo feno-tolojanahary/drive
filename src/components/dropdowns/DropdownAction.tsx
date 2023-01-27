@@ -2,11 +2,13 @@ import { Menu, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { 
     FaEdit,
-    FaTrashAlt
+    FaTrashAlt,
+    FaPlay
 } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { DocumentRow } from '../../server/src/common/interfaces/document';
-import { Action } from '../interfaces/general';
+import { DocumentRow, DocType } from '../../../server/src/common/interfaces/document';
+import { isVideoFile } from "../../../server/src/common/helper";
+import { Action } from '../../interfaces/general';
 
 type propsType = { 
     onClick: (eventName: Action, doc: DocumentRow) => void,
@@ -70,6 +72,26 @@ export default function DropdownAction({
                   </button>
                 )}
               </Menu.Item>
+            </div>
+            <div className="px-1 py-1 ">
+              { doc.type === DocType.FILE && isVideoFile(doc.name) &&
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={`${
+                        active ? 'bg-gray-300' : ''
+                      } group flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900`}
+                      onClick={() => onClick("play", doc)}
+                    >
+                        <FaPlay
+                          className="mr-2 h-5 w-5"
+                          aria-hidden="true"
+                        />
+                      Play
+                    </button>
+                  )}
+                </Menu.Item>
+              }
             </div>
           </Menu.Items>
         </Transition>
