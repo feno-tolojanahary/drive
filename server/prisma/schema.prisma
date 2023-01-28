@@ -23,6 +23,7 @@ model Document {
   type DocType
   originalname String?
   size Int?
+  mimeType String?
   isArchived Boolean? @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

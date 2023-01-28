@@ -57,7 +57,7 @@ export default function ModalDeleteDoc({
                     >
                     Ok
                 </button>
-                </div>
+            </div>
         </Modal>
     )
 }
