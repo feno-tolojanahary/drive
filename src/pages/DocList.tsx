@@ -10,6 +10,8 @@ import { Action } from "../interfaces/general";
 import ModalRenameFile from "../components/modals/RenameFile";
 import ModalDeleteDoc from "../components/modals/RemoveDoc";
 import ModalVideoPlayer from "../components/modals/VideoPlayer";
+import { useAppDispatch, useAppSelector } from "../redux/hook";
+import { selectDocManager, setCurrentKey } from "../redux/docManagerSlice";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
@@ -22,6 +24,9 @@ const DocList = () => {
     const [isOpenPlayer, setIsOpenPlayer] = useState<boolean>(false);
     const [isOpenRenameDoc, setIsOpenRenameDoc] = useState<boolean>(false);
     const inputFileRef = useRef<HTMLInputElement>(null);
+
+    const dispatch = useAppDispatch();
+    const currentKey: string = useAppSelector(selectDocManager);
    
     const getDocuments = useCallback((_parent: number | null, _docValue: DocumentRow[]) => {
         if (_docValue.length === 0) {
@@ -106,6 +111,11 @@ const DocList = () => {
         setDocuments(_newDocs);
     }
 
+    const handleDrillDownView = (selectedFolder: DocumentRow) => {
+        const newKey: string = currentKey + selectedFolder.key;
+        dispatch(setCurrentKey(newKey));
+    }
+
     return (
         <>
             <div className="mb-8">
@@ -116,7 +126,7 @@ const DocList = () => {
             </div>
             <TableView
                 documents={documents}
-                setView={setParent}
+                setParentDrillDownView={handleDrillDownView}
                 onClickAction={handleClickTableAction}
             />
             <FileInput onFileSelected={handleFileSelected} input={inputFileRef} />

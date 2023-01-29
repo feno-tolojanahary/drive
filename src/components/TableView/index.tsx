@@ -9,13 +9,13 @@ import { Action } from "../../interfaces/general";
 
 type propsType = {
     documents: DocumentRow[],
-    setView: React.Dispatch<React.SetStateAction<number | null>>,
+    setParentDrillDownView: (folder: DocumentRow) => void,
     onClickAction: (type: Action, doc: DocumentRow) => void
 }
 
 
 const TableView = (props: propsType) => {
-    const { documents: data, setView, onClickAction } = props;
+    const { documents: data, setParentDrillDownView, onClickAction } = props;
 
     const columns: Column<DocumentRow>[]  = React.useMemo(() => (
         [
@@ -74,7 +74,7 @@ const TableView = (props: propsType) => {
                                             <Item
                                                 key={row.id}
                                                 row={row}
-                                                setParentView={setView}
+                                                setParentDrillDownView={setParentDrillDownView}
                                             />
                                         )
                                     })
