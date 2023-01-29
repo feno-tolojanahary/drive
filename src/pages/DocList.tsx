@@ -12,6 +12,7 @@ import ModalDeleteDoc from "../components/modals/RemoveDoc";
 import ModalVideoPlayer from "../components/modals/VideoPlayer";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { selectDocManager, setCurrentKey } from "../redux/docManagerSlice";
+import { getNameForKey } from "../helpers";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
@@ -49,7 +50,9 @@ const DocList = () => {
           return
         }
         const formData = new FormData();
-        formData.append("file", file)
+        formData.append("file", file);
+        formData.append("parent", `${parent}`);
+        formData.append("key", `${currentKey}/${getNameForKey(file.name)}`);
     
         FileManager.uploadFile(formData).then(res => {
           if (!res) throw new Error("no resultat");
@@ -135,6 +138,7 @@ const DocList = () => {
                 addNewDocument={addNewDocument}
                 isOpen={isCreateFolderOpen}
                 setIsOpen={setIsCreateFolderOpen}
+                parent={parent}
             />
             { documentToRename &&
                 <ModalRenameFile

@@ -3,20 +3,26 @@ import Modal from "../Modal";
 import { toast } from 'react-toastify';
 import { DocType, Document, DocumentRow } from "../../../server/src/common/interfaces/document";
 import FileManager from "../../services/FileManager";
+import { getNameForKey } from "../../helpers";
+import { useAppSelector } from "../../redux/hook";
+import { selectDocManager } from "../../redux/docManagerSlice";
 
 type propsType = {
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    addNewDocument: (doc: DocumentRow) => void
+    addNewDocument: (doc: DocumentRow) => void,
+    parent: number | null
 }
 
 const CreateFolder = ({
     isOpen: isOpenModal,
     setIsOpen: setIsOpenModal,
-    addNewDocument
+    addNewDocument,
+    parent
 }: propsType) => {
 
     const [folderName, setFolderName] = useState<string>();
+    const currentKey: string = useAppSelector(selectDocManager);
 
     const handleChangeInput = (e: React.FormEvent<HTMLInputElement>) => {
         setFolderName(e.currentTarget.value);
@@ -28,9 +34,12 @@ const CreateFolder = ({
             return; 
         }
         
+        const name = getNameForKey(folderName);
         const folder: Document = {
-            name: folderName,
-            type: DocType.FOLDER
+            name,
+            type: DocType.FOLDER,
+            key: `${currentKey}/${name}`,
+            parent
         }
 
         FileManager.saveFolder(folder)
