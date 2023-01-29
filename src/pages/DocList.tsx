@@ -114,6 +114,7 @@ const DocList = () => {
     const handleDrillDownView = (selectedFolder: DocumentRow) => {
         const newKey: string = currentKey + selectedFolder.key;
         dispatch(setCurrentKey(newKey));
+        setParent(selectedFolder.id);
     }
 
     return (
