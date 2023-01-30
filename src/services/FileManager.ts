@@ -27,6 +27,10 @@ class FileManager {
     public static deleteDoc(id: number) {
         return http.put(`/doc/delete/${id}`);
     }
+
+    public static downloadFile(id: number) {
+        return http.get(`/doc/download/${id}`);
+    }
 }
 
 export default FileManager;

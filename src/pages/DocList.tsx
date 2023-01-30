@@ -84,15 +84,26 @@ const DocList = () => {
 
     
     const handleClickTableAction = async (type: Action, doc: DocumentRow) => {
-        if (type === "remove") {
-            setDocumentToDelete(doc);
-            setIsOpenModalDelete(true);
-        } else if (type === "update") {
-            setDocumentToRename(doc);
-            setIsOpenModalDelete(true);
-        } else if (type === "play") {
-            setVideoFile(doc);
-            setIsOpenPlayer(true);
+        switch (type) {
+            case "remove":
+                setDocumentToDelete(doc);
+                setIsOpenModalDelete(true);
+                break;
+            case "update":
+                setDocumentToRename(doc);
+                setIsOpenModalDelete(true);
+                break;
+            case "play":
+                setVideoFile(doc);
+                setIsOpenPlayer(true);
+                break;
+            case "download":
+                (async () => {
+                    await FileManager.downloadFile(doc.id)
+                })()
+                break;
+            default:
+                break;
         }
     }
 

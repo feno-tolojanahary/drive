@@ -122,17 +122,17 @@ class FileManagerController {
         }
     }
 
-    // public static async getFileKey (doc: Prisma.DocumentCreateInput): Promise<string> {
-    //     const parentKeys: Document[] = [];
-    //     let parent = null;
-    //     if (!doc.parent) return "";
-    //     do {
-    //         parent = await DocumentManager.findOne({id: doc.parent});
-    //         if (parent) {
-    //             parentKeys.push(parent.key);
-    //         }
-    //     } while(parent !== null);
-    // }
+    public static downloadFile = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const fileDoc: Document | null = await DocumentManager.findOne({ id: +req.params.id });
+            if (!fileDoc || !fileDoc.key) throw new Error("file not found");
+            res.download(join(__dirname, BASE_DIR, fileDoc.key), `${fileDoc.originalname}`);
+        } catch(err) {
+            console.log(err)
+            res.status(500).send("Error downloading file" + err);
+            next(err)
+        }
+    }
 }
 
 export default FileManagerController;

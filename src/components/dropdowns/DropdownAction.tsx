@@ -3,7 +3,8 @@ import { Fragment } from 'react'
 import { 
     FaEdit,
     FaTrashAlt,
-    FaPlay
+    FaPlay,
+    FaDownload
 } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { DocumentRow, DocType } from '../../../server/src/common/interfaces/document';
@@ -88,6 +89,26 @@ export default function DropdownAction({
                           aria-hidden="true"
                         />
                       Play
+                    </button>
+                  )}
+                </Menu.Item>
+              }
+            </div>
+            <div className="px-1 py-1 ">
+              { doc.type === DocType.FILE &&
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={`${
+                        active ? 'bg-gray-300' : ''
+                      } group flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900`}
+                      onClick={() => onClick("download", doc)}
+                    >
+                        <FaDownload
+                          className="mr-2 h-5 w-5"
+                          aria-hidden="true"
+                        />
+                      Download
                     </button>
                   )}
                 </Menu.Item>
