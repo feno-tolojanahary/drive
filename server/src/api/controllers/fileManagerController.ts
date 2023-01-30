@@ -86,7 +86,7 @@ class FileManagerController {
             if (!fileDoc || !fileDoc.key) throw new Error("file not found");
             if (!isVideoFile(fileDoc.key)) throw new Error("The file is not a video extension")
 
-            const path = join(__dirname, BASE_DIR, fileDoc.key);
+            const path = join(__dirname, BASE_DIR, ...fileDoc.key.split("/"));
             const stat = fs.statSync(path);
             const fileSize = stat.size;
             const range = req.headers.range;

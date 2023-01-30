@@ -1,4 +1,5 @@
 import { VIDEOS_EXTENSIONS } from "./constant"
+import { join } from "node:path";
 
 export function bytesToSize(bytes: number): string {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
@@ -11,4 +12,9 @@ export function bytesToSize(bytes: number): string {
 export function isVideoFile(key: string): boolean {
     const ext: string = key.split('.').pop() || ""
     return VIDEOS_EXTENSIONS.includes(ext);
+}
+
+export function convertKeyForSystem(key: string): string {
+    const arrPaths = key.split('/');
+    return join(...arrPaths);
 }

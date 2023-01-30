@@ -10,7 +10,8 @@ import { Action } from "../../interfaces/general";
 type propsType = {
     documents: DocumentRow[],
     setParentDrillDownView: (folder: DocumentRow) => void,
-    onClickAction: (type: Action, doc: DocumentRow) => void
+    onClickAction: (type: Action, doc: DocumentRow) => void,
+    parent: number | null
 }
 
 

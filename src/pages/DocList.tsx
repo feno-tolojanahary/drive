@@ -13,6 +13,7 @@ import ModalVideoPlayer from "../components/modals/VideoPlayer";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { selectDocManager, setCurrentKey } from "../redux/docManagerSlice";
 import { getNameForKey } from "../helpers";
+import PathHeader from "../components/PathHeader";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
@@ -120,6 +121,15 @@ const DocList = () => {
         setParent(selectedFolder.id);
     }
 
+    const handleClickParentPath = (folderName: string) => {
+        let parentId: number | null = null;
+        if (folderName) {
+            const parentDoc: DocumentRow | undefined = documents.find((item: DocumentRow) => item.name === folderName);
+            if (parentDoc) parentId = parentDoc.id;
+        }
+        setParent(parentId);
+    }
+
     return (
         <>
             <div className="mb-8">
@@ -128,10 +138,14 @@ const DocList = () => {
                     onClickFile={handleNewFile}
                 />
             </div>
+            <PathHeader
+                onClickPath={handleClickParentPath}
+            />
             <TableView
                 documents={documents}
                 setParentDrillDownView={handleDrillDownView}
                 onClickAction={handleClickTableAction}
+                parent={parent}
             />
             <FileInput onFileSelected={handleFileSelected} input={inputFileRef} />
             <ModalCreateFolder 

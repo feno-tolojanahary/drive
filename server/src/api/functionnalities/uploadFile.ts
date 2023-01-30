@@ -42,7 +42,13 @@ const uploadFile = (req: Request, res: Response, next: NextFunction) => {
         next();
     })
     bb.on('field', (name, value, _info) => {
-        req.body[name] = value;
+        let nameVal: any;
+        if (name === "parent") {
+            nameVal = +value;
+        } else {
+            nameVal = value;
+        }
+        req.body[name] = nameVal;
     })
     req.pipe(bb);
     next();
