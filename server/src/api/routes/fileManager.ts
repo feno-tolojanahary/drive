@@ -18,7 +18,7 @@ class FileManager {
         this.app.put('/doc/remove/:id', FileManagerController.removeFile);
         this.app.delete('/doc/delete/:id', FileManagerController.deleteDocument);
         this.app.get('/doc/read-video/:id', FileManagerController.readStreamVideo);
-        this.app.get('/doc/download/:id', FileManagerController.downloadFile);
+        this.app.get('/doc/download/:id', FileManagerController.downloadDoc);
     }
 }
 

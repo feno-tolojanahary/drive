@@ -99,7 +99,7 @@ const DocList = () => {
                 break;
             case "download":
                 (async () => {
-                    await FileManager.downloadFile(doc.id)
+                    await FileManager.download(doc.id)
                 })()
                 break;
             default:

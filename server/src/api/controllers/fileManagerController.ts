@@ -1,11 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import DocumentManager from "../services/documentManager";
 import { Document } from "../../common/interfaces/document";
-import fs from "node:fs";
+import fs, { createReadStream, createWriteStream } from "node:fs";
 import { join } from "node:path";
+import { createGzip } from "node:zlib";
+import { pipeline } from "node:stream";
 import { isVideoFile } from "../../common/helper";
+import { DocType } from "@prisma/client";
+import { promisify } from "node:util";
  
 const BASE_DIR = "../../../../../DATA";
+const pipe = promisify(pipeline);
 class FileManagerController {
     
     public static saveDocument = async (req: Request, res: Response, next: NextFunction) => {
@@ -20,7 +25,7 @@ class FileManagerController {
             console.log(err)
             res.status(500).send("Error saveUpload: " + err)
             next(err)
-        }
+        }   
     }
 
     public static getDocuments = async (req: Request, res: Response, next: NextFunction) => {
@@ -122,11 +127,24 @@ class FileManagerController {
         }
     }
 
-    public static downloadFile = async (req: Request, res: Response, next: NextFunction) => {
+    public static downloadDoc = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const fileDoc: Document | null = await DocumentManager.findOne({ id: +req.params.id });
             if (!fileDoc || !fileDoc.key) throw new Error("file not found");
-            res.download(join(__dirname, BASE_DIR, fileDoc.key), `${fileDoc.originalname}`);
+            const docPath = join(__dirname, BASE_DIR, fileDoc.key);
+
+            if (fileDoc.type === DocType.FILE) {
+                res.download(docPath, `${fileDoc.originalname}`);
+            } else {
+                const tempPath = join(__dirname, BASE_DIR, "temp", new Date().toLocaleDateString().replace('/', '-'));
+                await fs.mkdir(tempPath, { recursive: true }, async (err, path) => {
+                    if (err) throw err;
+                    const gzFolderPath = `${path}/${fileDoc}.gz`;
+                    await pipe(createReadStream(docPath), createGzip(), createWriteStream(gzFolderPath))
+                    res.download(gzFolderPath, `${fileDoc}.gz`);
+                    next();
+                });
+            }
         } catch(err) {
             console.log(err)
             res.status(500).send("Error downloading file" + err);
