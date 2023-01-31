@@ -8,8 +8,8 @@ import { pipeline } from "node:stream";
 import { isVideoFile } from "../../common/helper";
 import { DocType } from "@prisma/client";
 import { promisify } from "node:util";
- 
-const BASE_DIR = "../../../../../DATA";
+import { BASE_DIR } from "../helpers/constant";
+
 const pipe = promisify(pipeline);
 class FileManagerController {
     

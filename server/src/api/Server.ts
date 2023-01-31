@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import Routes from "./routes";
+import CronJob from "./helpers/cronJob";
 class Server {
     private app: Express;
     private port: number;
@@ -10,6 +11,8 @@ class Server {
         // Initialize routes
         const routes = new Routes(this.app);
         routes.init();
+        // start cronjob
+        new CronJob();
     }
 
     getApp() {
