@@ -7,7 +7,7 @@ import FileInput from "../components/FileInput";
 import { toast } from 'react-toastify';
 import MenuDropdown from "../components/dropdowns/MenuDropdown";
 import { Action } from "../interfaces/general";
-import ModalRenameFile from "../components/modals/RenameFile";
+import ModalRenameFile from "../components/modals/RenameDoc";
 import ModalDeleteDoc from "../components/modals/RemoveDoc";
 import ModalVideoPlayer from "../components/modals/VideoPlayer";
 import { useAppDispatch, useAppSelector } from "../redux/hook";

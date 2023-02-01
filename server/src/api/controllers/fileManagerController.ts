@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import DocumentManager from "../services/documentManager";
-import { Document } from "../../common/interfaces/document";
+import { Document } from "@prisma/client";
 import fs, { createReadStream, createWriteStream } from "node:fs";
 import { join } from "node:path";
 import { createGzip } from "node:zlib";
@@ -45,8 +45,15 @@ class FileManagerController {
             if (!req.params.id || !req.body) {
                 throw new Error("no param id or body given")
             }
-            const doc: Document = await DocumentManager.updateDocument({id: +req.params.id}, req.body);
-            res.status(200).json(doc);
+            const doc: any = req.body;
+            let updatedDoc: Document | null = null;
+
+            if (doc.type === DocType.FILE) {
+                updatedDoc = await DocumentManager.updateDocument({id: +req.params.id}, doc);
+            } else if (doc.type === DocType.FOLDER) {
+                updatedDoc = await DocumentManager.updateFolder({id: +req.params.id}, doc);
+            }
+            res.status(200).json(updatedDoc);
             next()
         } catch(err) {
             console.log(err)

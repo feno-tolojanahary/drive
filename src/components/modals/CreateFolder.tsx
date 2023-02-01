@@ -38,8 +38,8 @@ const CreateFolder = ({
         const folder: Document = {
             name,
             type: DocType.FOLDER,
-            key: `${currentKey}/${name}`,
-            parent
+            key: `${currentKey}/${name}/`,
+            parent,
         }
 
         FileManager.saveFolder(folder)

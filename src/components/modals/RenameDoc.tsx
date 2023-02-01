@@ -12,7 +12,7 @@ type propsType = {
     updateDocList: (type: Action, doc: DocumentRow) => void
 }
 
-const ModalRenameFile = ({
+const ModalRenameDoc = ({
     isOpen: isOpenModal,
     setIsOpen: setIsOpenModal,
     document,
@@ -45,13 +45,12 @@ const ModalRenameFile = ({
 
     return (
         <Modal 
-            title="New Folder"
+            title="Rename"
             isOpen={isOpenModal}
             setIsOpen={setIsOpenModal}
         >
             <form onSubmit={handleSubmitForm}>
                 <div className="mb-6">
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rename file</label>
                     <input 
                         type="text" 
                         onChange={handleChangeInput}
@@ -79,4 +78,4 @@ const ModalRenameFile = ({
     )
 }
 
-export default ModalRenameFile;
+export default ModalRenameDoc;
