@@ -6,6 +6,7 @@ import { DocumentRow } from "../../../server/src/common/interfaces/document";
 import { bytesToSize } from "../../../server/src/common/helper";
 import DropdownAction from "../dropdowns/DropdownAction";
 import { Action } from "../../interfaces/general";
+import ImageView from "../modals/ImageView";
 
 type propsType = {
     documents: DocumentRow[],
@@ -18,8 +19,12 @@ type propsType = {
 const TableView = (props: propsType) => {
     const { documents: data, setParentDrillDownView, onClickAction } = props;
 
-    const columns: Column<DocumentRow>[]  = React.useMemo(() => (
-        [
+    const [indexImageShowing, setIndexImageShowing] = useState<number>(0);
+
+    const columns: Column<DocumentRow>[]  = React.useMemo(() => {
+
+
+        return [
             {
                 Header: "Name",
                 accessor: 'name'
@@ -39,7 +44,7 @@ const TableView = (props: propsType) => {
                 Cell: ({ row }) => <DropdownAction onClick={onClickAction} doc={row.original} />
             }
         ]
-    ), [])   
+    }, [])   
 
     const {
         getTableProps,
@@ -50,46 +55,54 @@ const TableView = (props: propsType) => {
     } = useTable({ columns, data })
 
     return (
-        <div className="flex flex-col">
-            <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                    <div className="overflow-hidden">
-                        <table className="min-w-full" {...getTableProps()}>
-                            <thead className="bg-white border-b">
-                                { headerGroups.map((headerGroup: any) => (
-                                    <tr {...headerGroup.getHeaderGroupProps()}>
-                                    {headerGroup.headers.map((column: any) => (
-                                        <th className="text-sm font-medium text-gray-900 px-6 py-4 text-left" {...column.getHeaderProps()}>
-                                        {column.render('Header')}
-                                        </th>
+        <>
+            <div className="flex flex-col">
+                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                        <div className="overflow-hidden">
+                            <table className="min-w-full" {...getTableProps()}>
+                                <thead className="bg-white border-b">
+                                    { headerGroups.map((headerGroup: any) => (
+                                        <tr {...headerGroup.getHeaderGroupProps()}>
+                                        {headerGroup.headers.map((column: any) => (
+                                            <th className="text-sm font-medium text-gray-900 px-6 py-4 text-left" {...column.getHeaderProps()}>
+                                            {column.render('Header')}
+                                            </th>
+                                        ))}
+                                        </tr>
                                     ))}
+                                </thead>
+                                <tbody {...getTableBodyProps()}>
+                                {
+                                    rows.length ?
+                                        rows.map((row: Row<DocumentRow>) => {
+                                            prepareRow(row)
+                                            return (
+                                                <Item
+                                                    key={row.id}
+                                                    row={row}
+                                                    setParentDrillDownView={setParentDrillDownView}
+                                                    setIndexImageShowing={setIndexImageShowing}
+                                                />
+                                            )
+                                        })
+                                    : 
+                                    <tr>
+                                        <span>Folder is empty.</span>
                                     </tr>
-                                ))}
-                            </thead>
-                            <tbody {...getTableBodyProps()}>
-                            {
-                                rows.length ?
-                                    rows.map((row: Row<DocumentRow>) => {
-                                        prepareRow(row)
-                                        return (
-                                            <Item
-                                                key={row.id}
-                                                row={row}
-                                                setParentDrillDownView={setParentDrillDownView}
-                                            />
-                                        )
-                                    })
-                                : 
-                                <tr>
-                                    <span>Folder is empty.</span>
-                                </tr>
-                            }
-                            </tbody>
-                        </table>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <ImageView 
+                images={imagesList}
+                defaultIndex={indexImageShowing}
+            />
+        </>
                 
     )
 }

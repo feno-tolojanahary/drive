@@ -80,7 +80,9 @@ class DocumentManager {
             updateQuery.push(update);
         }
 
-        await Promise.all(updateQuery);
+        await Promise.all(updateQuery).catch(err => {
+            console.log("Rename Folder. Error updating sub key: ", err)
+        });
 
         return prisma.document.update({ 
             where: { id: input.id },
