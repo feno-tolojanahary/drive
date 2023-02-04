@@ -1,31 +1,31 @@
-import React, { useState, useCallback } from "react";
+import React, { useState   } from "react";
 import ImageViewer from "react-simple-image-viewer";
-import { DocumentRow } from "../../../server/src/common/interfaces/document";
 
 type Props = {
     images: string[],
-    defaultIndex: number
+    defaultIndex: number,
+    isOpen: boolean,
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function ImageView (props: Props) {
-  const { images, defaultIndex } = props;
+  const { 
+    images, 
+    defaultIndex, 
+    isOpen, 
+    setIsOpen 
+  } = props;
 
   const [currentImage, setCurrentImage] = useState<number>(defaultIndex);
-  const [isViewerOpen, setIsViewerOpen] = useState<boolean>(true);
-
-  const openImageViewer = useCallback((index: number) => {
-    setCurrentImage(index);
-    setIsViewerOpen(true);
-  }, []);
 
   const closeImageViewer = () => {
     setCurrentImage(0);
-    setIsViewerOpen(false);
+    setIsOpen(false);
   };
 
   return (
     <div>
-      {isViewerOpen && (
+      {isOpen && (
         <ImageViewer
           src={images}
           currentIndex={currentImage}

@@ -1,20 +1,26 @@
-import React, { MouseEvent } from "react";
+import React from "react";
 import { DocType, DocumentRow } from "../../../../server/src/common/interfaces/document";
 import { Row } from "react-table";
+import { isImage } from "../../../../server/src/common/helper";
+import { getUrlImage } from "../../../helpers";
 
 type propsType = {
     row: Row<DocumentRow>,
-    setParentDrillDownView: (folder: DocumentRow) => void
+    setParentDrillDownView: (folder: DocumentRow) => void,
+    previewImage: (url: string) => void
 }
 
 const Item = (props: propsType) => {
-    const { row, setParentDrillDownView } = props;
+    const { row, setParentDrillDownView, previewImage } = props;
     const document = row.original;
 
     const handleClickItem: React.MouseEventHandler<HTMLTableRowElement> =  (e) => {
         if (e.detail === 2) {
             if (document.type === DocType.FOLDER) {
                 setParentDrillDownView(document);
+            }
+            if (document.type === DocType.FILE && isImage(document.key)) {
+                previewImage(getUrlImage(document.key));
             }
         }
     }

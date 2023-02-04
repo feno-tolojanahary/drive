@@ -7,7 +7,7 @@ import { NextFunction, Request, Response } from "express";
 import sizeof from "object-sizeof";
 import { DocType } from "@prisma/client";
  
-const BASE_DIR = "../../../../../DATA";
+const BUCKET_DIR = "../../../../../DATA";
 
 interface CustomFileInfo extends busboy.FileInfo {
     originalname: string,
@@ -23,7 +23,7 @@ const uploadFile = (req: Request, res: Response, next: NextFunction) => {
     bb.on('file', (name: string, stream: internal.Readable, info: busboy.FileInfo) => {
         const { filename } = info;
         const generatedName = getGeneratedName(filename);
-        const saveTo = path.join(__dirname, BASE_DIR, generatedName);
+        const saveTo = path.join(__dirname, BUCKET_DIR, generatedName);
         req.pipe(createWriteStream(saveTo));
         file = {
             ...info,

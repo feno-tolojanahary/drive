@@ -39,7 +39,7 @@ class DocumentManager {
 
     public static removeFile(doc: Prisma.DocumentWhereUniqueInput): Promise<Document> {
         return prisma.document.update({
-            where: { id: doc.id },
+            where: { id: doc.id },                                                                    
             data: { isArchived: true }
         })
     }

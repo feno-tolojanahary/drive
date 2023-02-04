@@ -1,6 +1,9 @@
 import express, { Express } from "express";
 import Routes from "./routes";
 import CronJob from "./helpers/cronJob";
+import { join } from "path";
+
+const BUCKET_DIR = "../../../DATA";
 class Server {
     private app: Express;
     private port: number;
@@ -13,13 +16,15 @@ class Server {
         routes.init();
         // start cronjob
         new CronJob();
+
+        this.serveStaticFile();
     }
 
-    getApp() {
-        return this.app;
+    private serveStaticFile() {
+        this.app.use('/static', express.static(join(__dirname, BUCKET_DIR)))
     }
 
-    start() {
+    public start() {
         this.app.listen(this.port, () => {
             console.log(` Server listening on ${this.port} `);
         });

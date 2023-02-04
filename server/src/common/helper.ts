@@ -18,3 +18,7 @@ export function convertKeyForSystem(key: string): string {
     const arrPaths = key.split('/');
     return join(...arrPaths);
 }
+
+export function isImage(key: string) {
+    return /^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(key);
+}

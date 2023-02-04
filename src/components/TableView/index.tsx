@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../assets/css/tableView.css";
 import { useTable, Column, Row } from "react-table";
 import Item from "./components/Item";
-import { DocumentRow } from "../../../server/src/common/interfaces/document";
-import { bytesToSize } from "../../../server/src/common/helper";
+import { DocumentRow, DocType } from "../../../server/src/common/interfaces/document";
+import { bytesToSize, isImage } from "../../../server/src/common/helper";
 import DropdownAction from "../dropdowns/DropdownAction";
 import { Action } from "../../interfaces/general";
 import ImageView from "../modals/ImageView";
+import { getUrlImage } from "../../helpers";
 
 type propsType = {
     documents: DocumentRow[],
@@ -20,10 +21,9 @@ const TableView = (props: propsType) => {
     const { documents: data, setParentDrillDownView, onClickAction } = props;
 
     const [indexImageShowing, setIndexImageShowing] = useState<number>(0);
+    const [isOpenImageViewer, setIsOpenImageViewer] = useState<boolean>(false);
 
     const columns: Column<DocumentRow>[]  = React.useMemo(() => {
-
-
         return [
             {
                 Header: "Name",
@@ -45,6 +45,17 @@ const TableView = (props: propsType) => {
             }
         ]
     }, [])   
+
+    const imagesList: string[] = React.useMemo(() => data.filter((doc: DocumentRow) => (
+            doc.type === DocType.FILE && isImage(doc.key)
+        )).map((doc: DocumentRow) => getUrlImage(doc.key))
+    , [data]);
+
+    const previewImage = (url: string) => {
+        const index = imagesList.indexOf(url);
+        setIndexImageShowing(index);
+        setIsOpenImageViewer(true)
+    }
 
     const {
         getTableProps,
@@ -82,7 +93,7 @@ const TableView = (props: propsType) => {
                                                     key={row.id}
                                                     row={row}
                                                     setParentDrillDownView={setParentDrillDownView}
-                                                    setIndexImageShowing={setIndexImageShowing}
+                                                    previewImage={previewImage}
                                                 />
                                             )
                                         })
@@ -101,6 +112,8 @@ const TableView = (props: propsType) => {
             <ImageView 
                 images={imagesList}
                 defaultIndex={indexImageShowing}
+                isOpen={isOpenImageViewer}
+                setIsOpen={setIsOpenImageViewer}
             />
         </>
                 

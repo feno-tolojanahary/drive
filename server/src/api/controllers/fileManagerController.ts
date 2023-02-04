@@ -18,7 +18,15 @@ class FileManagerController {
             if (!req.body) {
                 throw new Error("no body received")
             }
-            const savedDoc = await DocumentManager.save(req.body);
+            const savedDoc: Document = await DocumentManager.save(req.body);
+            if (savedDoc.type === DocType.FOLDER) {
+                await fs.mkdir(join(__dirname, BASE_DIR, savedDoc.key), { recursive: true }, async (err) => {
+                    if (err) {
+                        await DocumentManager.deleteDoc({id: savedDoc.id})
+                        throw err;
+                    };
+                })
+            }
             res.status(200).json(savedDoc);
             next()
         } catch (err) {
