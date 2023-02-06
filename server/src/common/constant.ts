@@ -36,3 +36,14 @@ export const VIDEOS_EXTENSIONS = [
 	"wmv",
 	"yuv"
 ]
+
+export const DOCS_EXTENSION = [
+	"doc",
+	"docx",
+	"pdf",
+	"ppt",
+	"pptx",
+	"txt",
+	"xls",
+	"xlsx",
+]

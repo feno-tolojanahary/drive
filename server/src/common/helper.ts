@@ -1,4 +1,4 @@
-import { VIDEOS_EXTENSIONS } from "./constant"
+import { VIDEOS_EXTENSIONS, DOCS_EXTENSION } from "./constant"
 import { join } from "node:path";
 
 export function bytesToSize(bytes: number): string {
@@ -12,6 +12,11 @@ export function bytesToSize(bytes: number): string {
 export function isVideoFile(key: string): boolean {
     const ext: string = key.split('.').pop() || ""
     return VIDEOS_EXTENSIONS.includes(ext);
+}
+
+export function isDocFile(key: string): boolean {
+    const ext: string = key.split('.').pop() || ""  
+    return DOCS_EXTENSION.includes(ext);
 }
 
 export function convertKeyForSystem(key: string): string {

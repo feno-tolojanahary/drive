@@ -3,11 +3,14 @@ import "../../assets/css/tableView.css";
 import { useTable, Column, Row } from "react-table";
 import Item from "./components/Item";
 import { DocumentRow, DocType } from "../../../server/src/common/interfaces/document";
-import { bytesToSize, isImage } from "../../../server/src/common/helper";
+import { bytesToSize, isImage, isDocFile } from "../../../server/src/common/helper";
 import DropdownAction from "../dropdowns/DropdownAction";
 import { Action } from "../../interfaces/general";
 import ImageView from "../modals/ImageView";
-import { getUrlImage } from "../../helpers";
+import { getUrlImage, getIDocumentViewer } from "../../helpers";
+import { IDocument } from "react-doc-viewer";
+import DocsViewer from "../modals/DocsViewer";
+
 
 type propsType = {
     documents: DocumentRow[],
@@ -22,6 +25,8 @@ const TableView = (props: propsType) => {
 
     const [indexImageShowing, setIndexImageShowing] = useState<number>(0);
     const [isOpenImageViewer, setIsOpenImageViewer] = useState<boolean>(false);
+
+    const [isOpenDocViewer, setIsOpenDocViewer] = useState<boolean>(false);
 
     const columns: Column<DocumentRow>[]  = React.useMemo(() => {
         return [
@@ -44,17 +49,41 @@ const TableView = (props: propsType) => {
                 Cell: ({ row }) => <DropdownAction onClick={onClickAction} doc={row.original} />
             }
         ]
+    // eslint-disable-next-line
     }, [])   
 
-    const imagesList: string[] = React.useMemo(() => data.filter((doc: DocumentRow) => (
+    const imageViewList: string[] = React.useMemo(() => data.filter((doc: DocumentRow) => (
             doc.type === DocType.FILE && isImage(doc.key)
         )).map((doc: DocumentRow) => getUrlImage(doc.key))
     , [data]);
 
+    const docsViewList: IDocument[] = React.useMemo(() => data.filter((doc: DocumentRow) => (
+        doc.type === DocType.FILE && isDocFile(doc.key)
+    )).map((doc: DocumentRow) => getIDocumentViewer(doc.key)), [data])
+
     const previewImage = (url: string) => {
-        const index = imagesList.indexOf(url);
+        const index = imageViewList.indexOf(url);
         setIndexImageShowing(index);
         setIsOpenImageViewer(true)
+    }
+
+    const previewDoc = (iDoc: IDocument) => {
+        const index = docsViewList.findIndex((e: IDocument) => e.uri === iDoc.uri);
+        docsViewList.splice(index, 1);
+        docsViewList.unshift(iDoc);
+        setIsOpenDocViewer(true)
+    }
+
+    const previewItem = (doc: DocumentRow) => {
+        if (doc.type === DocType.FOLDER) {
+            setParentDrillDownView(doc);
+        }
+        if (doc.type === DocType.FILE) {
+            if (isImage(doc.key)) previewImage(getUrlImage(doc.key));
+            if (isDocFile(doc.key)) previewDoc(getIDocumentViewer(doc.key));
+        }
+
+
     }
 
     const {
@@ -92,8 +121,7 @@ const TableView = (props: propsType) => {
                                                 <Item
                                                     key={row.id}
                                                     row={row}
-                                                    setParentDrillDownView={setParentDrillDownView}
-                                                    previewImage={previewImage}
+                                                    previewItem={previewItem}
                                                 />
                                             )
                                         })
@@ -110,10 +138,16 @@ const TableView = (props: propsType) => {
             </div>
 
             <ImageView 
-                images={imagesList}
+                images={imageViewList}
                 defaultIndex={indexImageShowing}
                 isOpen={isOpenImageViewer}
                 setIsOpen={setIsOpenImageViewer}
+            />
+
+            <DocsViewer
+                isOpen={isOpenDocViewer}
+                setIsOpen={setIsOpenDocViewer}
+                docs={docsViewList}
             />
         </>
                 
