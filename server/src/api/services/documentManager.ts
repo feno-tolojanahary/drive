@@ -26,7 +26,15 @@ class DocumentManager {
         return document;
     }
 
-    public static getAll(): Promise<Document[]> {
+    public static async getAll(): Promise<Document[]> {
+        const parents = [];
+        let currentParents = [null];
+        
+        const currentParents = await prisma.document.findMany({ 
+            where: { parent: currentParents },
+            select: 
+         })
+
         return prisma.document.findMany();
     }
 
