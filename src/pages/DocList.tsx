@@ -31,18 +31,13 @@ const DocList = () => {
     const currentKey: string = useAppSelector(selectDocManager);
    
     const getDocuments = useCallback((_parent: number | null, _docValue: DocumentRow[]) => {
-        if (_docValue.length === 0) {
-            FileManager.getDocuments()
-            .then((res: any) => {
-                const data: DocumentRow[] = res.data;
-                setDocuments(getByParent(_parent, data));
-            }).catch(err => {
-                console.log("Error getting document: ", err);
-            })
-        } else {
-            const parentDoc: DocumentRow | undefined = _docValue.find((item: DocumentRow) => item.id === _parent);
-            if (parentDoc?.type === DocType.FOLDER) setDocuments(getByParent(_parent, _docValue))
-        }
+        FileManager.getDocuments(_parent)
+        .then((res: any) => {
+            const data: DocumentRow[] = res.data;
+            setDocuments(data);
+        }).catch(err => {
+            console.log("Error getting document: ", err);
+        })
     }, [])
 
     const handleFileSelected = (file: File | undefined) => {
@@ -72,10 +67,6 @@ const DocList = () => {
 
     const addNewDocument = (doc: DocumentRow) => {
         getDocuments(parent, [...documents, doc]);
-    }
-
-    const getByParent = (parent: number | null, docs: DocumentRow[]): DocumentRow[] => {
-        return docs.filter((item: DocumentRow) => item.parent === parent)
     }
 
     const handleNewFile = () => {

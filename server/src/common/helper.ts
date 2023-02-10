@@ -14,6 +14,7 @@ export function isVideoFile(key: string): boolean {
     return VIDEOS_EXTENSIONS.includes(ext);
 }
 
+
 export function isDocFile(key: string): boolean {
     const ext: string = key.split('.').pop() || ""  
     return DOCS_EXTENSION.includes(ext);

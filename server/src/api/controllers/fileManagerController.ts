@@ -38,7 +38,7 @@ class FileManagerController {
 
     public static getDocuments = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const docs: Document[] = await DocumentManager.getAll();
+            const docs: Document[] = await DocumentManager.getAll(req.params.parentId);
             res.status(200).json(docs);
             next()
         } catch(err) {

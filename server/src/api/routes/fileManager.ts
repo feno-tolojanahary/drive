@@ -16,7 +16,7 @@ class FileManager {
     private routes() {
         this.router.post('/upload-file', uploadFile, FileManagerController.saveDocument);
         this.router.post('/save-folder', FileManagerController.saveDocument)
-        this.router.get('/list', FileManagerController.getDocuments);
+        this.router.get('/list/:parentId', FileManagerController.getDocuments);
         this.router.put('/update/:id', FileManagerController.updateDocument);
         this.router.put('/remove/:id', FileManagerController.removeFile);
         this.router.delete('/delete/:id', FileManagerController.deleteDocument);

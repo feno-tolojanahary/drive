@@ -4,8 +4,8 @@ import http from "./http";
 class FileManager {
     constructor() {}
 
-    public static getDocuments() {
-        return http.get('/doc/list');
+    public static getDocuments(parentId: number | null = null) {
+        return http.get(`/doc/list/${parentId}`);
     }
 
     public static uploadFile(data: any) {
