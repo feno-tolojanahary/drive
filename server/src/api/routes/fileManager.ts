@@ -1,19 +1,16 @@
-import express, { Express, Router } from "express";
+import { Router } from "express";
 import uploadFile from "../functionnalities/uploadFile";
 import FileManagerController from "../controllers/fileManagerController";
+import { IRouteContructor, IRoute } from "./interfaces";
 
-class FileManager {
-    private app: Express;
+const FileManagerRoute: IRouteContructor = class FileManager implements IRoute {
     private router: Router;
 
-    constructor(app: Express) {
-        this.app = app;
-        this.router = express.Router();
-        this.routes();
-        this.app.use('/doc', this.router);
+    constructor(router: Router) {
+        this.router = router;                                                                                                                                              
     }
 
-    private routes() {
+    public routes() {
         this.router.post('/upload-file', uploadFile, FileManagerController.saveDocument);
         this.router.post('/save-folder', FileManagerController.saveDocument)
         this.router.get('/list/:parentId', FileManagerController.getDocuments);
@@ -22,7 +19,8 @@ class FileManager {
         this.router.delete('/delete/:id', FileManagerController.deleteDocument);
         this.router.get('/read-video/:id', FileManagerController.readStreamVideo);
         this.router.get('/download/:id', FileManagerController.downloadDoc);
+        this.router.use('/doc', this.router);         
     }
 }
 
-export default FileManager;
+export default FileManagerRoute;

@@ -1,0 +1,18 @@
+import { Router } from "express";
+import ArchiveController from "../controllers/archiveController";
+import { IRouteContructor, IRoute } from "./interfaces";
+
+const ArchiveRoute: IRouteContructor = class Archive implements IRoute {
+    private router: Router;
+
+    constructor(router: Router) {
+        this.router = router;
+    }
+
+    public routes() {
+        this.router.get('/', ArchiveController.getArchives)
+        this.router.use('/archive', this.router);
+    }
+}
+
+export default ArchiveRoute;

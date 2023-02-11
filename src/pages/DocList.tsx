@@ -25,7 +25,7 @@ const DocList = () => {
     const [isOpenModalToDelete, setIsOpenModalDelete] = useState<boolean>(false);
     const [isOpenPlayer, setIsOpenPlayer] = useState<boolean>(false);
     const [isOpenRenameDoc, setIsOpenRenameDoc] = useState<boolean>(false);
-    const inputFileRef = useRef<HTMLInputElement>(null);
+    const inputFileRef = useRef<HTMLInputElement>(null);    
 
     const dispatch = useAppDispatch();
     const currentKey: string = useAppSelector(selectDocManager);

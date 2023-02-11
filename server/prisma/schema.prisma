@@ -24,7 +24,14 @@ model Document {
   originalname String?
   size Int?
   mimeType String?
-  isArchived Boolean? @default(false)
+  archive Archive?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Archive {
+  id Int @id @default(autoincrement())
+  hasArchivedParent Boolean
+  document Document @relation(fields: [documentId], references: [id])
+  documentId Int @unique
 }
