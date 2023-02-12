@@ -26,7 +26,7 @@ class DocumentManager {
         return document;
     }
 
-    private static async getTreeChildId(parents: number[]): Promise<number[]> {
+    public static async getTreeChildId(parents: number[]): Promise<number[]> {
         const parentChilds: number[] = [];
         let currentParents: number[] = [];
         
@@ -48,7 +48,12 @@ class DocumentManager {
         const parentIds: number[] = await DocumentManager.getTreeChildId(parentParam);
 
         return prisma.document.findMany({
-            where: { parent: { in: parentIds } }
+            where: { 
+                parent: { in: parentIds },
+                archived: {
+                    isSet: false
+                } 
+            }
         });
     }
 
@@ -56,13 +61,6 @@ class DocumentManager {
         return prisma.document.update({
             where: { id: input.id as number },
             data: doc
-        })
-    }
-
-    public static removeFile(doc: Prisma.DocumentWhereUniqueInput): Promise<Document> {
-        return prisma.document.update({
-            where: { id: doc.id },                                                                    
-            data: { isArchived: true }
         })
     }
 

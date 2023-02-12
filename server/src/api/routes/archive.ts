@@ -10,7 +10,8 @@ const ArchiveRoute: IRouteContructor = class Archive implements IRoute {
     }
 
     public routes() {
-        this.router.get('/', ArchiveController.getArchives)
+        this.router.get('/', ArchiveController.getArchives);
+        this.router.put('/create/:id', ArchiveController.archiveDoc);
         this.router.use('/archive', this.router);
     }
 }

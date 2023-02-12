@@ -15,7 +15,6 @@ const FileManagerRoute: IRouteContructor = class FileManager implements IRoute {
         this.router.post('/save-folder', FileManagerController.saveDocument)
         this.router.get('/list/:parentId', FileManagerController.getDocuments);
         this.router.put('/update/:id', FileManagerController.updateDocument);
-        this.router.put('/remove/:id', FileManagerController.removeFile);
         this.router.delete('/delete/:id', FileManagerController.deleteDocument);
         this.router.get('/read-video/:id', FileManagerController.readStreamVideo);
         this.router.get('/download/:id', FileManagerController.downloadDoc);

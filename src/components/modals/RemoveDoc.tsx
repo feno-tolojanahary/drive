@@ -1,9 +1,10 @@
 import React from "react";
 import Modal from "../Modal";
 import { DocumentRow } from "../../../server/src/common/interfaces/document";
-import FileManager from "../../services/FileManager";
 import { toast } from "react-toastify";
 import { Action } from "../../interfaces/general";
+import ArchiveService from "../../services/ArchiveService";
+import { AxiosResponse } from "axios";
 
 type propsType = {
     isOpen: boolean,
@@ -20,10 +21,10 @@ export default function ModalDeleteDoc({
 } : propsType) {
 
     const handleDeleteDoc = () => {
-        FileManager.removeDoc(document.id)
-            .then((res) => {
-                const doc: DocumentRow = res.data;
-                updateDocList("remove", doc);
+        ArchiveService.archive(document.id)
+            .then((res: AxiosResponse) => {
+                if (res.data && +res.data === 0) throw new Error("0 archived doc"); 
+                updateDocList("remove", document);
                 toast.success("Removing file with success");
             }).catch(err => {
                 console.log(err)

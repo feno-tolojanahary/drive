@@ -70,21 +70,6 @@ class FileManagerController {
         }
     }
 
-    public static removeFile = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            if (!req.params.id) {
-                throw new Error("no param id given")
-            }
-            const removedFile: Document = await DocumentManager.removeFile({id: +req.params.id});
-            res.status(200).json(removedFile);
-            next()
-        } catch(err) {
-            console.log(err)
-            res.status(500).send("Error getAll: " + err);
-            next(err)
-        }
-    }
-
     public static deleteDocument = async (req: Request, res: Response, next: NextFunction) => {
         try {
             if (!req.params.id) {
