@@ -19,12 +19,12 @@ export default function ModalDeleteDoc({
     document,
     updateDocList
 } : propsType) {
-
+;
     const handleDeleteDoc = () => {
         ArchiveService.archive(document.id)
             .then((res: AxiosResponse) => {
                 if (res.data && +res.data === 0) throw new Error("0 archived doc"); 
-                updateDocList("remove", document);
+                updateDocList("remove", document);                                                                                           
                 toast.success("Removing file with success");
             }).catch(err => {
                 console.log(err)

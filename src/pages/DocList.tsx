@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import TableView from "../components/TableView";
 import FileManager from "../services/FileManager";
-import { DocType, DocumentRow } from "../../server/src/common/interfaces/document";
+import { DocumentRow } from "../../server/src/common/interfaces/document";
 import ModalCreateFolder from "../components/modals/CreateFolder";
 import FileInput from "../components/FileInput";
 import { toast } from 'react-toastify';
@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { selectDocManager, setCurrentKey } from "../redux/docManagerSlice";
 import { getNameForKey } from "../helpers";
 import PathHeader from "../components/PathHeader";
+import { AxiosResponse } from "axios";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
@@ -30,7 +31,7 @@ const DocList = () => {
     const dispatch = useAppDispatch();
     const currentKey: string = useAppSelector(selectDocManager);
    
-    const getDocuments = useCallback((_parent: number | null, _docValue: DocumentRow[]) => {
+    const getDocuments = useCallback((_parent: number | null) => {
         FileManager.getDocuments(_parent)
         .then((res: any) => {
             const data: DocumentRow[] = res.data;
@@ -50,23 +51,22 @@ const DocList = () => {
         formData.append("parent", `${parent}`);
         formData.append("key", `${currentKey}/${getNameForKey(file.name)}`);
     
-        FileManager.uploadFile(formData).then(res => {
-          if (!res) throw new Error("no resultat");
+        FileManager.uploadFile(formData).then((res: AxiosResponse) => {
+          if (!res.data) throw new Error("no resultat");
           toast.success("Upload with success")
-          const doc: DocumentRow = res.data;
-          getDocuments(parent, [...documents, doc]);
+          getDocuments(parent);
         }).catch(error => {
           console.log(error)
         })
       };
 
     useEffect(() => {
-        getDocuments(parent, documents);
+        getDocuments(parent);
         // eslint-disable-next-line
     }, [parent, getDocuments])
 
-    const addNewDocument = (doc: DocumentRow) => {
-        getDocuments(parent, [...documents, doc]);
+    const addNewDocument = (_doc: DocumentRow) => {
+        getDocuments(parent);
     }
 
     const handleNewFile = () => {

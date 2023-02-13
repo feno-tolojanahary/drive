@@ -3,13 +3,14 @@ import "../../assets/css/tableView.css";
 import { useTable, Column, Row } from "react-table";
 import Item from "./components/Item";
 import { DocumentRow, DocType } from "../../../server/src/common/interfaces/document";
-import { bytesToSize, isImage, isDocFile } from "../../../server/src/common/helper";
+import { bytesToSize, isImage, isDocFile, isVideoFile } from "../../../server/src/common/helper";
 import DropdownAction from "../dropdowns/DropdownAction";
 import { Action } from "../../interfaces/general";
 import ImageView from "../modals/ImageView";
 import { getUrlImage, getIDocumentViewer } from "../../helpers";
 import { IDocument } from "react-doc-viewer";
 import DocsViewer from "../modals/DocsViewer";
+import { FaFolder, FaRegFile, FaRegFileImage, FaRegFileVideo } from "react-icons/fa";
 
 
 type propsType = {
@@ -19,6 +20,21 @@ type propsType = {
     parent: number | null
 }
 
+const DocName = ({ doc }: { doc: DocumentRow }) => {
+    return (
+        <span>
+            { doc.type === DocType.FOLDER 
+                ? <FaFolder /> 
+                : isVideoFile(doc.key)
+                ? <FaRegFileVideo />
+                : isImage(doc.key)
+                ? <FaRegFileImage />
+                : <FaRegFile />
+            }
+            <span className="ml-2">{doc.originalname}</span>
+        </span>
+    )
+}
 
 const TableView = (props: propsType) => {
     const { documents: data, setParentDrillDownView, onClickAction } = props;
@@ -32,7 +48,8 @@ const TableView = (props: propsType) => {
         return [
             {
                 Header: "Name",
-                accessor: 'name'
+                accessor: 'name',
+                Cell: ({ row }) => <DocName doc={row.original} />
             },
             {
                 Header: "Size",
