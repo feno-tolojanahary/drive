@@ -1,4 +1,3 @@
-import { DocumentRow } from "../../common/interfaces/document";
 import { NextFunction, Request, Response } from "express";
 import ArchiveService from "../services/archiveService";
 
@@ -6,7 +5,8 @@ class ArchiveController {
 
     public static async getArchives (req: Request, res: Response, next: NextFunction) {
         try {
-
+            const archives = await ArchiveService.getArchive();
+            res.status(200).json(archives);
         } catch(err) {
             console.log(err)
             res.status(500).send("Error archiving doc: " + err)
@@ -30,7 +30,7 @@ class ArchiveController {
 
     public static async restoreDoc(req: Request, res: Response, next: NextFunction) {
         try {
-            	
+            
         } catch(err) {
             console.log(err)
             res.status(500).send("Error archiving doc: " + err)

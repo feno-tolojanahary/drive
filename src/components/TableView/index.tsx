@@ -15,9 +15,9 @@ import { FaFolder, FaRegFile, FaRegFileImage, FaRegFileVideo } from "react-icons
 
 type propsType = {
     documents: DocumentRow[],
-    setParentDrillDownView: (folder: DocumentRow) => void,
+    setParentDrillDownView?: (folder: DocumentRow) => void,
     onClickAction: (type: Action, doc: DocumentRow) => void,
-    parent: number | null
+    parent?: number | null
 }
 
 const DocName = ({ doc }: { doc: DocumentRow }) => {
@@ -37,7 +37,11 @@ const DocName = ({ doc }: { doc: DocumentRow }) => {
 }
 
 const TableView = (props: propsType) => {
-    const { documents: data, setParentDrillDownView, onClickAction } = props;
+    const { 
+        documents: data, 
+        setParentDrillDownView = () => {}, 
+        onClickAction 
+    } = props;
 
     const [indexImageShowing, setIndexImageShowing] = useState<number>(0);
     const [isOpenImageViewer, setIsOpenImageViewer] = useState<boolean>(false);

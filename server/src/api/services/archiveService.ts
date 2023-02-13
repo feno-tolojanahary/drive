@@ -20,7 +20,17 @@ class ArchiveService {
         })
     }
 
-    
+    public static async getArchive(): Promise<Document> {
+        return prisma.document.findMany({
+            where: {
+                archive: {
+                    is: {
+                        hasArchivedParent: false
+                    }
+                }
+            }
+        })
+    }
 }
 
 export default ArchiveService;
