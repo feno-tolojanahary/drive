@@ -17,7 +17,8 @@ type propsType = {
     documents: DocumentRow[],
     setParentDrillDownView?: (folder: DocumentRow) => void,
     onClickAction: (type: Action, doc: DocumentRow) => void,
-    parent?: number | null
+    parent?: number | null,
+    restoreDoc?: (doc: DocumentRow) => void
 }
 
 const DocName = ({ doc }: { doc: DocumentRow }) => {
@@ -40,7 +41,8 @@ const TableView = (props: propsType) => {
     const { 
         documents: data, 
         setParentDrillDownView = () => {}, 
-        onClickAction 
+        onClickAction,
+        restoreDoc = () => {}
     } = props;
 
     const [indexImageShowing, setIndexImageShowing] = useState<number>(0);
@@ -107,7 +109,7 @@ const TableView = (props: propsType) => {
                 if (isDocFile(doc.key)) previewDoc(getIDocumentViewer(doc.key));
             }
         } else {
-            
+            restoreDoc(doc);
         }
 
     }

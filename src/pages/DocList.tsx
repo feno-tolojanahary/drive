@@ -10,6 +10,7 @@ import { Action } from "../interfaces/general";
 import ModalRenameFile from "../components/modals/RenameDoc";
 import ModalDeleteDoc from "../components/modals/RemoveDoc";
 import ModalVideoPlayer from "../components/modals/VideoPlayer";
+import ModalRestoreDoc from "../components/modals/RestoreDoc";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { selectDocManager, setCurrentKey } from "../redux/docManagerSlice";
 import { getNameForKey } from "../helpers";
@@ -22,11 +23,13 @@ const DocList = () => {
     const [parent, setParent] = useState<number | null>(null);
     const [documentToDelete, setDocumentToDelete] = useState<DocumentRow>();
     const [documentToRename, setDocumentToRename] = useState<DocumentRow>();
+    const [documentToRestore, setDocumentToRestore] = useState<DocumentRow>();
     const [videoFile, setVideoFile] = useState<DocumentRow>();
     const [isCreateFolderOpen, setIsCreateFolderOpen] = useState<boolean>(false);
     const [isOpenModalToDelete, setIsOpenModalDelete] = useState<boolean>(false);
     const [isOpenPlayer, setIsOpenPlayer] = useState<boolean>(false);
     const [isOpenRenameDoc, setIsOpenRenameDoc] = useState<boolean>(false);
+    const [isOpenRestoreDoc, setIsOpenRestoreDoc] = useState<boolean>(false);
     const inputFileRef = useRef<HTMLInputElement>(null);    
 
     const { updateType } = useContext<ContextTableType>(TableViewContext)
@@ -139,6 +142,15 @@ const DocList = () => {
         setParent(parentId);
     }
 
+    const updateList = () => {
+        getDocuments(parent);
+    }
+
+    const restoreDoc = (doc: DocumentRow) => {
+        setDocumentToRestore(doc);
+        setIsOpenRestoreDoc(true);
+    }
+
     return (
         <>
             <div className="mb-8">
@@ -154,6 +166,7 @@ const DocList = () => {
                 documents={documents}
                 setParentDrillDownView={handleDrillDownView}
                 onClickAction={handleClickTableAction}
+                restoreDoc={restoreDoc}
                 parent={parent}
             />
             <FileInput onFileSelected={handleFileSelected} input={inputFileRef} />
@@ -184,6 +197,14 @@ const DocList = () => {
                     isOpen={isOpenPlayer}
                     setIsOpen={setIsOpenPlayer}
                     videoFile={videoFile}
+                />
+            }
+            { documentToRestore &&
+                <ModalRestoreDoc 
+                    isOpen={isOpenRestoreDoc}
+                    setIsOpen={setIsOpenRestoreDoc}
+                    document={documentToRestore}       
+                    updateList={updateList} 
                 />
             }
         </>
