@@ -4,8 +4,8 @@ import ArchiveService from "../services/archiveService";
 class ArchiveController {
 
     public static async getArchives (req: Request, res: Response, next: NextFunction) {
-        try {
-            const archives = await ArchiveService.getArchive();
+        try {   
+            const archives   = await ArchiveService.getArchive();
             res.status(200).json(archives);
         } catch(err) {
             console.log(err)

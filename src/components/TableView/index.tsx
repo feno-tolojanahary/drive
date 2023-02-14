@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../assets/css/tableView.css";
 import { useTable, Column, Row } from "react-table";
 import Item from "./components/Item";
@@ -11,7 +11,7 @@ import { getUrlImage, getIDocumentViewer } from "../../helpers";
 import { IDocument } from "react-doc-viewer";
 import DocsViewer from "../modals/DocsViewer";
 import { FaFolder, FaRegFile, FaRegFileImage, FaRegFileVideo } from "react-icons/fa";
-
+import TableViewContext, { ContextTableType } from "../../globalState/tableViewContext";
 
 type propsType = {
     documents: DocumentRow[],
@@ -47,6 +47,8 @@ const TableView = (props: propsType) => {
     const [isOpenImageViewer, setIsOpenImageViewer] = useState<boolean>(false);
 
     const [isOpenDocViewer, setIsOpenDocViewer] = useState<boolean>(false);
+
+    const { type } = useContext<ContextTableType>(TableViewContext);
 
     const columns: Column<DocumentRow>[]  = React.useMemo(() => {
         return [
@@ -95,15 +97,18 @@ const TableView = (props: propsType) => {
         setIsOpenDocViewer(true)
     }
 
-    const previewItem = (doc: DocumentRow) => {
-        if (doc.type === DocType.FOLDER) {
-            setParentDrillDownView(doc);
+    const processItem = (doc: DocumentRow) => {
+        if (type === "drive") {
+            if (doc.type === DocType.FOLDER) {
+                setParentDrillDownView(doc);
+            }
+            if (doc.type === DocType.FILE) {
+                if (isImage(doc.key)) previewImage(getUrlImage(doc.key));
+                if (isDocFile(doc.key)) previewDoc(getIDocumentViewer(doc.key));
+            }
+        } else {
+            
         }
-        if (doc.type === DocType.FILE) {
-            if (isImage(doc.key)) previewImage(getUrlImage(doc.key));
-            if (isDocFile(doc.key)) previewDoc(getIDocumentViewer(doc.key));
-        }
-
 
     }
 
@@ -142,7 +147,7 @@ const TableView = (props: propsType) => {
                                                 <Item
                                                     key={row.id}
                                                     row={row}
-                                                    previewItem={previewItem}
+                                                    processItem={processItem}
                                                 />
                                             )
                                         })

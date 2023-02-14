@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef, useContext } from "react";
 import TableView from "../components/TableView";
 import FileManager from "../services/FileManager";
 import { DocumentRow } from "../../server/src/common/interfaces/document";
@@ -15,6 +15,7 @@ import { selectDocManager, setCurrentKey } from "../redux/docManagerSlice";
 import { getNameForKey } from "../helpers";
 import PathHeader from "../components/PathHeader";
 import { AxiosResponse } from "axios";
+import TableViewContext, { ContextTableType } from "../globalState/tableViewContext";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
@@ -28,6 +29,8 @@ const DocList = () => {
     const [isOpenRenameDoc, setIsOpenRenameDoc] = useState<boolean>(false);
     const inputFileRef = useRef<HTMLInputElement>(null);    
 
+    const { updateType } = useContext<ContextTableType>(TableViewContext)
+
     const dispatch = useAppDispatch();
     const currentKey: string = useAppSelector(selectDocManager);
    
@@ -40,6 +43,10 @@ const DocList = () => {
             console.log("Error getting document: ", err);
         })
     }, [])
+
+    useEffect(() => {
+        updateType("drive");
+    }, []) // eslint-disable-line
 
     const handleFileSelected = (file: File | undefined) => {
         if (!file) {

@@ -4,16 +4,16 @@ import { Row } from "react-table";
 
 type propsType = {
     row: Row<DocumentRow>,
-    previewItem: (doc: DocumentRow) => void
+    processItem: (doc: DocumentRow) => void
 }
 
 const Item = (props: propsType) => {
-    const { row, previewItem } = props;
+    const { row, processItem } = props;
     const document = row.original;
 
     const handleClickItem: React.MouseEventHandler<HTMLTableRowElement> =  (e) => {
         if (e.detail === 2) {
-            previewItem(document)
+            processItem(document)
         }
     }
 
