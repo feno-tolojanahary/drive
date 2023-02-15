@@ -6,7 +6,7 @@ import ModalCreateFolder from "../components/modals/CreateFolder";
 import FileInput from "../components/FileInput";
 import { toast } from 'react-toastify';
 import MenuDropdown from "../components/dropdowns/MenuDropdown";
-import { Action } from "../interfaces/general";
+import { Action, ActionBin } from "../interfaces/general";
 import ModalRenameFile from "../components/modals/RenameDoc";
 import ModalDeleteDoc from "../components/modals/RemoveDoc";
 import ModalVideoPlayer from "../components/modals/VideoPlayer";
@@ -17,6 +17,7 @@ import { getNameForKey } from "../helpers";
 import PathHeader from "../components/PathHeader";
 import { AxiosResponse } from "axios";
 import TableViewContext, { ContextTableType } from "../globalState/tableViewContext";
+import ArchiveService from "../services/ArchiveService";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
@@ -83,8 +84,17 @@ const DocList = () => {
         inputFileRef.current?.click();
     }
 
-    
-    const handleClickTableAction = async (type: Action, doc: DocumentRow) => {
+    const deleteForever = (doc: DocumentRow) => {
+        ArchiveService.delete(doc.id)
+            .then((_res: AxiosResponse) => {
+                updateList();
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    const handleClickTableAction = async (type: Action | ActionBin, doc: DocumentRow) => {
         switch (type) {
             case "remove":
                 setDocumentToDelete(doc);
@@ -102,6 +112,13 @@ const DocList = () => {
                 (async () => {
                     await FileManager.download(doc.id)
                 })()
+                break;
+            case "restore": 
+                setDocumentToRestore(doc);
+                setIsOpenRestoreDoc(true)
+                break;
+            case "delete":
+                deleteForever(doc);
                 break;
             default:
                 break;

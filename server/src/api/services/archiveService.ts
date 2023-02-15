@@ -52,6 +52,28 @@ class ArchiveService {
         }
         return doc;
     }
+
+    public static async deleteDoc(input: Prisma.DocumentWhereUniqueInput): Promise<any> {
+        const doc: Document | null = await prisma.document.findUnique({
+            where: { id: input.id }
+        })
+        
+        if (!doc) return Promise.reject(new Error("Specified document not found"));
+        if (doc.type === DocType.FILE) { 
+            await prisma.archive.delete({ where: { documentId: doc.id } })
+            await prisma.document.delete({ where: { id: doc.id } })
+        } else {
+            const docIds: number[] = [doc.id];
+            await DocumentManager.getTreeChildId(docIds, docIds)
+            await prisma.archive.deleteMany({
+                where: { documentId: { in: docIds } }
+            })
+            await prisma.document.deleteMany({
+                where: { id: { in: docIds } }
+            })
+        }
+        
+    }
 }
 
 export default ArchiveService;

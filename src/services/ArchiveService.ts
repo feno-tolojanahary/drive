@@ -14,6 +14,10 @@ class ArchiveService {
     public static restore(id: number): Promise<AxiosResponse<any, any>> {
         return http.put(`/archive/restore/${id}`)
     }
+
+    public static delete(id: number): Promise<AxiosResponse<any, any>> {
+        return http.delete(`/archive/delete/${id}`)
+    }
 }
 
 export default ArchiveService;

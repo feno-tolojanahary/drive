@@ -5,18 +5,19 @@ import Item from "./components/Item";
 import { DocumentRow, DocType } from "../../../server/src/common/interfaces/document";
 import { bytesToSize, isImage, isDocFile, isVideoFile } from "../../../server/src/common/helper";
 import DropdownAction from "../dropdowns/DropdownAction";
-import { Action } from "../../interfaces/general";
+import { Action, ActionBin } from "../../interfaces/general";
 import ImageView from "../modals/ImageView";
 import { getUrlImage, getIDocumentViewer } from "../../helpers";
 import { IDocument } from "react-doc-viewer";
 import DocsViewer from "../modals/DocsViewer";
 import { FaFolder, FaRegFile, FaRegFileImage, FaRegFileVideo } from "react-icons/fa";
 import TableViewContext, { ContextTableType } from "../../globalState/tableViewContext";
+import DropdownActionBin from "../dropdowns/DropdownActionBin";
 
 type propsType = {
     documents: DocumentRow[],
     setParentDrillDownView?: (folder: DocumentRow) => void,
-    onClickAction: (type: Action, doc: DocumentRow) => void,
+    onClickAction: (type: Action | ActionBin, doc: DocumentRow) => void,
     parent?: number | null,
     restoreDoc?: (doc: DocumentRow) => void
 }
@@ -71,7 +72,9 @@ const TableView = (props: propsType) => {
             {
                 Header: "",
                 accessor: "id",
-                Cell: ({ row }) => <DropdownAction onClick={onClickAction} doc={row.original} />
+                Cell: ({ row }) => type === "archive" ?
+                                     <DropdownActionBin onClick={onClickAction} doc={row.original} />
+                                     : <DropdownAction onClick={onClickAction} doc={row.original} />
             }
         ]
     // eslint-disable-next-line
