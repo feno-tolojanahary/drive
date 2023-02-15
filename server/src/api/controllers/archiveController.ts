@@ -30,7 +30,11 @@ class ArchiveController {
 
     public static async restoreDoc(req: Request, res: Response, next: NextFunction) {
         try {
-            
+            if (!req.params.id) {
+                throw new Error("no param id doc given!");
+            }
+            const restoredDoc = await ArchiveService.restoreDoc({id: +req.params.id});
+            res.status(200).json(restoredDoc)
         } catch(err) {
             console.log(err)
             res.status(500).send("Error archiving doc: " + err)

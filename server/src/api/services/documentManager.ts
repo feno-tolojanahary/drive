@@ -26,26 +26,24 @@ class DocumentManager {
         return document;
     }
 
-    public static async getTreeChildId(parents: number[]): Promise<number[]> {
-        const parentChilds: number[] = [];
+    public static async getTreeChildId(idsWhereInput: number[], arrayIds: number[]) {
         let currentParents: number[] = [];
         
         const currentChilds = await prisma.document.findMany({ 
-            where: { parent: { in: parents } },
+            where: { parent: { in: idsWhereInput } },
             select: { id: true }
         })
         if (currentChilds.length) {
             currentParents = currentChilds.map(el => el.id);
-            parentChilds.concat(currentParents);
-            parentChilds.concat((await DocumentManager.getTreeChildId(currentParents)));
+            arrayIds.concat(currentParents);
+            await DocumentManager.getTreeChildId(currentParents, arrayIds);
         }
 
-        return parentChilds;
     }
 
     public static async getAll(parent: string | null = null): Promise<Document[]> {
-        const parentParam: number[] = parent ? [+parent] : [];
-        const parentIds: number[] = await DocumentManager.getTreeChildId(parentParam);
+        const parentIds: number[] = parent ? [+parent] : [];
+        await DocumentManager.getTreeChildId(parentIds, parentIds);
 
         return prisma.document.findMany({
             where: { 

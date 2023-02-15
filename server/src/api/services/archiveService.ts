@@ -2,15 +2,17 @@
 import { prisma } from "./db";
 import { Prisma } from "@prisma/client";
 import DocumentManager from "./documentManager";
+import { DocType } from "../../common/interfaces/document";
+import { Document } from "@prisma/client";
 
 class ArchiveService {
 
     public static async archiveDoc(input: Prisma.DocumentWhereUniqueInput): Promise<Prisma.BatchPayload> {
-        const parentParam: number[] = input.id ? [input.id] : [];
+        const parentIds: number[] = input.id ? [input.id] : [];
 
-        const parentIds: number[] = await DocumentManager.getTreeChildId(parentParam);
+        await DocumentManager.getTreeChildId(parentIds, parentIds);
 
-        const archives = parentIds.concat(parentParam).map((id: number) => ({
+        const archives = parentIds.map((id: number) => ({
             hasArchivedParent: id !== input.id ? true : false,
             documentId: id
         }))
@@ -20,7 +22,7 @@ class ArchiveService {
         })
     }
 
-    public static async getArchive(): Promise<Document> {
+    public static async getArchive(): Promise<Document[]> {
         return prisma.document.findMany({
             where: {
                 archive: {
@@ -30,6 +32,25 @@ class ArchiveService {
                 }
             }
         })
+    }
+
+    public static async restoreDoc(input: Prisma.DocumentWhereUniqueInput): Promise<Document> {
+        const doc: Document | null = await prisma.document.findUnique({
+            where: { id: input.id }
+        })
+        
+        if (!doc) return Promise.reject(new Error("Specified document not found"));
+
+        if (doc.type === DocType.FILE) {
+            await prisma.archive.delete({ where: { documentId: doc.id } })
+        } else {
+            const docIds: number[] = [doc.id];
+            await DocumentManager.getTreeChildId(docIds, docIds)
+            await prisma.archive.deleteMany({
+                where: { documentId: { in: docIds } }
+            })
+        }
+        return doc;
     }
 }
 

@@ -111,7 +111,6 @@ const TableView = (props: propsType) => {
         } else {
             restoreDoc(doc);
         }
-
     }
 
     const {
