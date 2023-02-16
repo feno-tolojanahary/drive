@@ -47,8 +47,19 @@ class ArchiveController {
             if (!req.params.id) {
                 throw new Error("no param id doc given!");
             }
-            const res = await ArchiveService.deleteDoc({id: +req.params.id});
-            res.status(200).json(res)
+            const result = await ArchiveService.deleteDoc({id: +req.params.id});
+            res.status(200).json(result)
+        } catch(err) {
+            console.log(err)
+            res.status(500).send("Error deleting doc: " + err)
+            next(err)
+        }
+    }
+
+    public static async emptyBin(req: Request, res: Response, next: NextFunction) {
+        try {
+            const result = await ArchiveService.emptyBin();
+            res.status(200).json(result)
         } catch(err) {
             console.log(err)
             res.status(500).send("Error deleting doc: " + err)

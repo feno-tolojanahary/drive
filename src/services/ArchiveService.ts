@@ -18,6 +18,10 @@ class ArchiveService {
     public static delete(id: number): Promise<AxiosResponse<any, any>> {
         return http.delete(`/archive/delete/${id}`)
     }
+
+    public static emptyBin(): Promise<AxiosResponse<any, any>> {
+        return http.patch(`/emptyBin`)
+    }
 }
 
 export default ArchiveService;

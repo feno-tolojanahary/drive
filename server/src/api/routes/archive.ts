@@ -14,6 +14,7 @@ const ArchiveRoute: IRouteContructor = class Archive implements IRoute {
         this.router.put('/create/:id', ArchiveController.archiveDoc);
         this.router.put('/restore/:id', ArchiveController.restoreDoc);
         this.router.delete('/delete/:id', ArchiveController.deleteDoc);
+        this.router.patch('/emptyBin', ArchiveController.emptyBin);
         this.router.use('/archive', this.router);
     }
 }

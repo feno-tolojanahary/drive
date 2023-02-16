@@ -6,6 +6,7 @@ import ArchiveService from "../services/ArchiveService";
 import TableViewContext, { ContextTableType } from "../globalState/tableViewContext";
 import ModalRestoreDoc from "../components/modals/RestoreDoc";
 import { Action, ActionBin } from "../interfaces/general";
+import { toast } from 'react-toastify';
 
 export default function Bin() {
     const { updateType } = useContext<ContextTableType>(TableViewContext);
@@ -57,11 +58,16 @@ export default function Bin() {
         setIsOpenRestoreDoc(true);
     }
 
+    const emptyBin = async () => {
+        await ArchiveService.emptyBin();
+        toast.success("Your bin is now empty!")
+    }
+
     return (
         <>
             <div className="alert bg-yellow-100 rounded-lg py-5 px-6 mb-3 text-base text-yellow-700 inline-flex items-center w-full alert-dismissible fade show" role="alert">
                 Items in the bin are deleted forever after 30 days
-                <button type="button" className="btn-close box-content w-4 h-4 p-1 ml-auto text-yellow-900 border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-yellow-900 hover:opacity-75 hover:no-underline">Empty bin</button>
+                <button onClick={emptyBin} type="button" className="p-1 ml-auto bg-yellow-200 hover:bg-yellow-500 rounded text-yellow-900 border-none opacity-70 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-yellow-400 hover:opacity-75 hover:no-underline"><strong>Empty bin</strong></button>
             </div>
             <TableView 
                 documents={documents}

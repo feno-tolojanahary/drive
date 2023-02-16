@@ -78,10 +78,13 @@ class ArchiveService {
     }
 
     public static async deleteExpiredArchive() : Promise<any> {
-        
         await prisma.document.deleteMany({
             where: { expireOn: { lte: new Date() } }
         })
+    }
+
+    public static emptyBin() {
+        return prisma.document.deleteMany()
     }
 }
 
