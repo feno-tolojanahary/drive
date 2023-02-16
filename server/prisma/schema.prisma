@@ -32,6 +32,7 @@ model Document {
 model Archive {
   id Int @id @default(autoincrement())
   hasArchivedParent Boolean
+  expireOn DateTime
   document Document @relation(fields: [documentId], references: [id])
   documentId Int @unique
 }

@@ -3,6 +3,7 @@ import { BASE_DIR } from "./constant";
 import { join } from "path";
 import fs from "fs";
 import { promisify } from "util";
+import ArchiveService from "../services/archiveService";
 
 const _rm = promisify(fs.rm);
 
@@ -12,6 +13,7 @@ class CronJob {
         // Every day 
         cron.schedule("0 0 * * *", () => {
             this.removeTempFolder();
+            ArchiveService.deleteExpiredArchive();
         });
     }
 

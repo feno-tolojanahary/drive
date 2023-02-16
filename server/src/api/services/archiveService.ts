@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import DocumentManager from "./documentManager";
 import { DocType } from "../../common/interfaces/document";
 import { Document } from "@prisma/client";
+import moment from "moment";
 
 class ArchiveService {
 
@@ -14,7 +15,8 @@ class ArchiveService {
 
         const archives = parentIds.map((id: number) => ({
             hasArchivedParent: id !== input.id ? true : false,
-            documentId: id
+            documentId: id,
+            expireOn: moment().add(30, "days").toDate()
         }))
 
         return prisma.archive.createMany({
@@ -73,6 +75,13 @@ class ArchiveService {
             })
         }
         
+    }
+
+    public static async deleteExpiredArchive() : Promise<any> {
+        
+        await prisma.document.deleteMany({
+            where: { expireOn: { lte: new Date() } }
+        })
     }
 }
 
