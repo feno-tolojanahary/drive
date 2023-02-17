@@ -19,7 +19,7 @@ import TableViewContext, { ContextTableType } from "../globalState/tableViewCont
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
-    const [parent, setParent] = useState<number | null>(null);
+    const [parentId, setParentId] = useState<number | null>(null);
     const [documentToDelete, setDocumentToDelete] = useState<DocumentRow>();
     const [documentToRename, setDocumentToRename] = useState<DocumentRow>();
     const [videoFile, setVideoFile] = useState<DocumentRow>();
@@ -34,8 +34,8 @@ const DocList = () => {
     const dispatch = useAppDispatch();
     const currentKey: string = useAppSelector(selectDocManager);
    
-    const getDocuments = useCallback((_parent: number | null) => {
-        FileManager.getDocuments(_parent)
+    const getDocuments = useCallback((_parentId: number | null) => {
+        FileManager.getDocuments(_parentId)
         .then((res: any) => {
             const data: DocumentRow[] = res.data;
             setDocuments(data);
@@ -55,25 +55,25 @@ const DocList = () => {
         }
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("parent", `${parent}`);
+        formData.append("parentId", `${parentId}`);
         formData.append("key", `${currentKey}/${getNameForKey(file.name)}`);
     
         FileManager.uploadFile(formData).then((res: AxiosResponse) => {
           if (!res.data) throw new Error("no resultat");
           toast.success("Upload with success")
-          getDocuments(parent);
+          getDocuments(parentId);
         }).catch(error => {
           console.log(error)
         })
       };
 
     useEffect(() => {
-        getDocuments(parent);
+        getDocuments(parentId);
         // eslint-disable-next-line
-    }, [parent, getDocuments])
+    }, [parentId, getDocuments])
 
     const addNewDocument = (_doc: DocumentRow) => {
-        getDocuments(parent);
+        getDocuments(parentId);
     }
 
     const handleNewFile = () => {
@@ -126,7 +126,7 @@ const DocList = () => {
     const handleDrillDownView = (selectedFolder: DocumentRow) => {
         const newKey: string = currentKey + selectedFolder.key;
         dispatch(setCurrentKey(newKey));
-        setParent(selectedFolder.id);
+        setParentId(selectedFolder.id);
     }
 
     const handleClickParentPath = (folderName: string) => {
@@ -135,7 +135,7 @@ const DocList = () => {
             const parentDoc: DocumentRow | undefined = documents.find((item: DocumentRow) => item.name === folderName);
             if (parentDoc) parentId = parentDoc.id;
         }
-        setParent(parentId);
+        setParentId(parentId);
     }
 
     
@@ -155,14 +155,13 @@ const DocList = () => {
                 documents={documents}
                 setParentDrillDownView={handleDrillDownView}
                 onClickAction={handleClickTableAction}
-                parent={parent}
             />
             <FileInput onFileSelected={handleFileSelected} input={inputFileRef} />
             <ModalCreateFolder 
                 addNewDocument={addNewDocument}
                 isOpen={isCreateFolderOpen}
                 setIsOpen={setIsCreateFolderOpen}
-                parent={parent}
+                parentId={parentId}
             />
             { documentToRename &&
                 <ModalRenameFile

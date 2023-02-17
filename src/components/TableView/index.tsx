@@ -18,7 +18,6 @@ type propsType = {
     documents: DocumentRow[],
     setParentDrillDownView?: (folder: DocumentRow) => void,
     onClickAction: (type: Action | ActionBin, doc: DocumentRow) => void,
-    parent?: number | null,
     restoreDoc?: (doc: DocumentRow) => void
 }
 

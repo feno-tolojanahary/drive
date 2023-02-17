@@ -18,7 +18,9 @@ enum DocType {
 model Document {
   id Int @id @default(autoincrement())
   name String
-  parent Int?
+  parentId Int? @unique 
+  parent Document? @relation("Parent", fields: [parentId], references: [id])
+  childs Document[] @relation("Parent")
   key String
   type DocType
   originalname String?

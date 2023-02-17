@@ -9,14 +9,14 @@ class DocumentManager {
         if (!docSelect.parent) return Promise.reject(new Error("No parent given in param"));
 
         const parent = await prisma.document.findUnique({
-                    where: { id: docSelect.parent } 
+                    where: { parentId: docSelect.parentId } 
                 });
 
         const parentKey = parent?.key ? `${parent?.key}/` : "";
         const document = await prisma.document.create({
             data: {
                 name: docSelect.name,
-                parent: docSelect.parent,
+                parentId: docSelect.parentId,
                 type: docSelect.type,
                 key: `${parentKey}${docSelect.name}`,
                 originalname: docSelect.originalname,
@@ -30,7 +30,7 @@ class DocumentManager {
         let currentParents: number[] = [];
         
         const currentChilds = await prisma.document.findMany({ 
-            where: { parent: { in: idsWhereInput } },
+            where: { parentId: { in: idsWhereInput } },
             select: { id: true }
         })
         if (currentChilds.length) {
@@ -47,7 +47,7 @@ class DocumentManager {
 
         return prisma.document.findMany({
             where: { 
-                parent: { in: parentIds },
+                parentId: { in: parentIds },
                 archived: {
                     isSet: false
                 } 

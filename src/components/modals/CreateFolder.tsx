@@ -11,14 +11,14 @@ type propsType = {
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
     addNewDocument: (doc: DocumentRow) => void,
-    parent: number | null
+    parentId: number | null
 }
 
 const CreateFolder = ({
     isOpen: isOpenModal,
     setIsOpen: setIsOpenModal,
     addNewDocument,
-    parent
+    parentId
 }: propsType) => {
 
     const [folderName, setFolderName] = useState<string>();
@@ -39,7 +39,7 @@ const CreateFolder = ({
             name,
             type: DocType.FOLDER,
             key: `${currentKey}/${name}/`,
-            parent,
+            parentId,
         }
 
         FileManager.saveFolder(folder)
