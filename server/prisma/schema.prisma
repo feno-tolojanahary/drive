@@ -37,4 +37,6 @@ model Archive {
   expireOn DateTime
   document Document @relation(fields: [documentId], references: [id])
   documentId Int @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

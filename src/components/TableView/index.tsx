@@ -62,7 +62,7 @@ const TableView = (props: propsType) => {
             {
                 Header: "Size",
                 accessor: "size",
-                Cell: ({value}) => value ? <>{bytesToSize(value)}</> : <></>
+                Cell: ({value, row}) => row.original.type === DocType.FILE && value ? <>{bytesToSize(value)}</> : <>-</>
             },
             {
                 Header: "Modified",
