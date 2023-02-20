@@ -1,24 +1,21 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useMemo } from "react";
 import "../../assets/css/tableView.css";
-import { useTable, Column, Row } from "react-table";
+import { useTable, Column, Row, CellProps } from "react-table";
 import Item from "./components/Item";
 import { DocumentRow, DocType } from "../../../server/src/common/interfaces/document";
 import { bytesToSize, isImage, isDocFile, isVideoFile } from "../../../server/src/common/helper";
-import DropdownAction from "../dropdowns/DropdownAction";
-import { Action, ActionBin } from "../../interfaces/general";
 import ImageView from "../modals/ImageView";
 import { getUrlImage, getIDocumentViewer } from "../../helpers";
 import { IDocument } from "react-doc-viewer";
 import DocsViewer from "../modals/DocsViewer";
 import { FaFolder, FaRegFile, FaRegFileImage, FaRegFileVideo } from "react-icons/fa";
 import TableViewContext, { ContextTableType } from "../../globalState/tableViewContext";
-import DropdownActionBin from "../dropdowns/DropdownActionBin";
 
 type propsType = {
     documents: DocumentRow[],
     setParentDrillDownView?: (folder: DocumentRow) => void,
-    onClickAction: (type: Action | ActionBin, doc: DocumentRow) => void,
-    restoreDoc?: (doc: DocumentRow) => void
+    restoreDoc?: (doc: DocumentRow) => void,
+    columns: Column<DocumentRow>[]
 }
 
 const DocName = ({ doc }: { doc: DocumentRow }) => {
@@ -41,9 +38,32 @@ const TableView = (props: propsType) => {
     const { 
         documents: data, 
         setParentDrillDownView = () => {}, 
-        onClickAction,
+        columns: inputColumns,
         restoreDoc = () => {}
     } = props;
+
+    const wrapCustomHeads = (columns: Column<DocumentRow>[]): Column<DocumentRow>[] => {
+        return  columns.map(
+            (column: Column<DocumentRow>) => { 
+                let wrappedColumn: Column<DocumentRow> = column;
+                if (wrappedColumn.accessor === 'name') { 
+                    wrappedColumn = ({
+                            ...wrappedColumn,
+                            Cell: ({ row }: CellProps<DocumentRow, string | undefined>) => <DocName doc={row.original} />
+                        }) 
+                }
+                if (wrappedColumn.accessor === "size") {
+                    wrappedColumn = ({
+                        ...wrappedColumn,
+                        Cell: ({value, row}: CellProps<DocumentRow, number | undefined>) => row.original.type === DocType.FILE && value ? <>{bytesToSize(value)}</> : <>-</>
+                    })
+                }
+                return wrappedColumn;
+            }
+        )
+    }
+
+    const columns: Column<DocumentRow>[] = useMemo(() => wrapCustomHeads(inputColumns), [inputColumns]);
 
     const [indexImageShowing, setIndexImageShowing] = useState<number>(0);
     const [isOpenImageViewer, setIsOpenImageViewer] = useState<boolean>(false);
@@ -51,33 +71,6 @@ const TableView = (props: propsType) => {
     const [isOpenDocViewer, setIsOpenDocViewer] = useState<boolean>(false);
 
     const { type } = useContext<ContextTableType>(TableViewContext);
-
-    const columns: Column<DocumentRow>[]  = React.useMemo(() => {
-        return [
-            {
-                Header: "Name",
-                accessor: 'name',
-                Cell: ({ row }) => <DocName doc={row.original} />
-            },
-            {
-                Header: "Size",
-                accessor: "size",
-                Cell: ({value, row}) => row.original.type === DocType.FILE && value ? <>{bytesToSize(value)}</> : <>-</>
-            },
-            {
-                Header: "Modified",
-                accessor: "updatedAt"
-            },
-            {
-                Header: "",
-                accessor: "id",
-                Cell: ({ row }) => type === "archive" ?
-                                     <DropdownActionBin onClick={onClickAction} doc={row.original} />
-                                     : <DropdownAction onClick={onClickAction} doc={row.original} />
-            }
-        ]
-    // eslint-disable-next-line
-    }, [])   
 
     const imageViewList: string[] = React.useMemo(() => data.filter((doc: DocumentRow) => (
             doc.type === DocType.FILE && isImage(doc.key)

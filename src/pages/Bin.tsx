@@ -1,5 +1,7 @@
+import React from "react";
 import { AxiosResponse } from "axios";
 import { useCallback, useContext, useEffect, useState } from "react";
+import {  Column } from "react-table";
 import { DocumentRow } from "../../server/src/common/interfaces/document";
 import TableView from "../components/TableView";
 import ArchiveService from "../services/ArchiveService";
@@ -7,6 +9,7 @@ import TableViewContext, { ContextTableType } from "../globalState/tableViewCont
 import ModalRestoreDoc from "../components/modals/RestoreDoc";
 import { Action, ActionBin } from "../interfaces/general";
 import { toast } from 'react-toastify';
+import DropdownActionBin from "../components/dropdowns/DropdownActionBin";
 
 export default function Bin() {
     const { updateType } = useContext<ContextTableType>(TableViewContext);
@@ -43,6 +46,29 @@ export default function Bin() {
         }
     }
 
+    const columns: Column<DocumentRow>[]  = React.useMemo(() => {
+        return [
+            {
+                Header: "Name",
+                accessor: 'name'
+            },
+            {
+                Header: "Size",
+                accessor: "size"
+            },
+            {
+                Header: "Modified",
+                accessor: "updatedAt"
+            },
+            {
+                Header: "",
+                accessor: "id",
+                Cell: ({ row }) => <DropdownActionBin onClick={handleClickTableAction} doc={row.original} />
+            }
+        ]
+    // eslint-disable-next-line
+    }, [])   
+
     const deleteForever = (doc: DocumentRow) => {
         ArchiveService.delete(doc.id)
             .then((_res: AxiosResponse) => {
@@ -70,8 +96,8 @@ export default function Bin() {
                 <button onClick={emptyBin} type="button" className="p-1 ml-auto bg-yellow-200 hover:bg-yellow-500 rounded text-yellow-900 border-none opacity-70 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-yellow-400 hover:opacity-75 hover:no-underline"><strong>Empty bin</strong></button>
             </div>
             <TableView 
+                columns={columns}
                 documents={documents}
-                onClickAction={handleClickTableAction}
                 restoreDoc={restoreDoc}
             />
              { documentToRestore &&

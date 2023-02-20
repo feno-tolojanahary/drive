@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState, useRef, useContext } from "react";
-import TableView from "../components/TableView";
 import FileManager from "../services/FileManager";
 import { DocumentRow } from "../../server/src/common/interfaces/document";
 import ModalCreateFolder from "../components/modals/CreateFolder";
@@ -16,6 +15,7 @@ import { getNameForKey } from "../helpers";
 import PathHeader from "../components/PathHeader";
 import { AxiosResponse } from "axios";
 import TableViewContext, { ContextTableType } from "../globalState/tableViewContext";
+import MyDrive from "../components/MyDriveTable";
 
 const DocList = () => {
     const [documents, setDocuments] = useState<DocumentRow[]>([])
@@ -151,7 +151,7 @@ const DocList = () => {
             <PathHeader
                 onClickPath={handleClickParentPath}
             />
-            <TableView
+            <MyDrive
                 documents={documents}
                 setParentDrillDownView={handleDrillDownView}
                 onClickAction={handleClickTableAction}
