@@ -8,6 +8,7 @@ export interface Document {
     parentId?: number | null,
     parent?: Document,
     childs?: Document[],
+    archive?: Archive,
     mimeType?: string | null,
     originalname?: string | null,
     size?: number | null,
@@ -22,6 +23,7 @@ export interface DocumentOpt {
     key?: string,
     parentId?: number | null,
     parent?: Document,
+    archive?: Archive,
     childs?: Document[],
     originalname?: string | null,
     size?: number | null,
@@ -38,11 +40,21 @@ export interface DocumentRow {
     parent?: Document,
     childs?: Document[],
     key: string,
+    archive?: Archive,
     originalname?: string,
     size?: number,
     mimeType?: string | null,
     updatedAt?: Date,
     createdAt?: Date
+}
+
+export interface Archive {
+    id?: number,
+    hasArchivedParent?: boolean,
+    expireOn: Date
+    document?: DocumentRow,
+    documentId: number,
+    createdAt: Date
 }
 
 export const DocType = {

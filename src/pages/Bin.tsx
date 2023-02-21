@@ -10,6 +10,7 @@ import ModalRestoreDoc from "../components/modals/RestoreDoc";
 import { Action, ActionBin } from "../interfaces/general";
 import { toast } from 'react-toastify';
 import DropdownActionBin from "../components/dropdowns/DropdownActionBin";
+import moment from "moment";
 
 export default function Bin() {
     const { updateType } = useContext<ContextTableType>(TableViewContext);
@@ -57,8 +58,14 @@ export default function Bin() {
                 accessor: "size"
             },
             {
-                Header: "Modified",
-                accessor: "updatedAt"
+                Header: "Date binned",
+                accessor: "archive",
+                Cell: ({ value }) => <>{moment(value?.createdAt).format("Do MMM YYYY")}</>
+            },
+            {
+                Header: "Original location",
+                accessor: "parent",
+                Cell: ({ value }) => <>{value ? value.name : "-"}</>
             },
             {
                 Header: "",

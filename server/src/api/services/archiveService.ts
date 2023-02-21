@@ -32,6 +32,9 @@ class ArchiveService {
                         hasArchivedParent: false
                     }
                 }
+            },
+            include: {
+                parent: true
             }
         })
     }
