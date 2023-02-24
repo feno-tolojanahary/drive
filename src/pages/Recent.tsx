@@ -4,7 +4,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Column } from "react-table";
 import { DocumentRow } from "../../server/src/common/interfaces/document";
-import DropdownAction from "../components/dropdowns/DropdownAction";
 import TableView from "../components/TableView";
 import RecentService from "../services/RecentService";
 
@@ -20,10 +19,6 @@ const Recent = () => {
         })
 
     }, [])
-
-    const handleClickTableAction = () => {
-
-    }
 
     const columns: Column<DocumentRow>[]  = React.useMemo(() => {
         return [
@@ -44,11 +39,6 @@ const Recent = () => {
                 Header: "Original location",
                 accessor: "parent",
                 Cell: ({ value }) => <>{value ? value.name : "-"}</>
-            },
-            {
-                Header: "",
-                accessor: "id",
-                Cell: ({ row }) => <DropdownAction onClick={handleClickTableAction} doc={row.original} />
             }
         ]
     // eslint-disable-next-line
